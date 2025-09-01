@@ -2165,6 +2165,72 @@
         window.addEventListener('load', initializeCalendar);
         setTimeout(initializeCalendar, 100);
     </script>
+<!-- (선택) 처음에 화면을 가볍게 덮는 시작 오버레이 -->
+<style>
+  #audioStartOverlay{
+    position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+    background:rgba(0,0,0,.5); color:#fff; font-size:1.1rem; z-index:99999;
+  }
+  #audioStartOverlay button{ padding:.8rem 1.2rem; border-radius:.6rem; border:0; }
+</style>
+<div id="audioStartOverlay">
+  <button id="audioStartBtn">시작하기</button>
+</div>
+
+<script>
+(function(){
+  // 페이지 내 <audio>들을 모아두고, 첫 탭 때 재생 가능 상태로 만듭니다.
+  const audios = () => Array.from(document.querySelectorAll('audio'));
+  const startBtn = document.getElementById('audioStartBtn');
+  const overlay = document.getElementById('audioStartOverlay');
+
+  // WebAudio를 쓰는 경우도 대비 (효과음 등)
+  let ctx;
+  function getCtx(){
+    if(!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    return ctx;
+  }
+  async function resumeCtx(){
+    try{
+      const c = getCtx();
+      if (c.state !== 'running') await c.resume();
+      console.log('[audio] AudioContext resumed');
+    }catch(e){ console.log('[audio] resume error', e); }
+  }
+
+  async function unlockAudios(){
+    // 일부 단말은 mute → play → unmute 순서가 필요
+    for(const el of audios()){
+      try{
+        el.setAttribute('playsinline','');
+        el.muted = true;
+        await el.play().catch(()=>{});
+        el.muted = false;
+      }catch(e){ /* 다음 탭에서 다시 시도됨 */ }
+    }
+    await resumeCtx();
+  }
+
+  async function onFirstTap(){
+    await unlockAudios();
+    // 필요하면 바로 배경음 재생:
+    // const bgm = document.getElementById('bgm'); if (bgm) bgm.play().catch(()=>{});
+    overlay.style.display = 'none';
+    // 이후 불필요한 리스너 제거
+    window.removeEventListener('touchstart', onFirstTap, {passive:true});
+    window.removeEventListener('click', onFirstTap, {passive:true});
+  }
+
+  startBtn.addEventListener('click', onFirstTap, {passive:true});
+  window.addEventListener('touchstart', onFirstTap, {passive:true});
+  window.addEventListener('click', onFirstTap, {passive:true});
+
+  // 앱이 백그라운드 → 포그라운드 복귀 시 소리 끊김 방지
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) unlockAudios();
+  });
+})();
+</script>    
 </body>
 </html>
                 
