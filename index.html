@@ -1,0 +1,2170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의영어공부</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
+            background: #f5f5f7;
+            padding: 10px;
+            margin: 0;
+            min-height: 100vh;
+        }
+        
+        .calendar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #FFB6C1 0%, #87CEEB 50%, #98FB98 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: 
+                radial-gradient(circle at 20% 20%, #FFD700 15px, transparent 15px),
+                radial-gradient(circle at 80% 30%, #FF69B4 12px, transparent 12px),
+                radial-gradient(circle at 40% 70%, #32CD32 18px, transparent 18px),
+                radial-gradient(circle at 70% 80%, #FF6347 14px, transparent 14px),
+                radial-gradient(circle at 90% 10%, #9370DB 16px, transparent 16px),
+                radial-gradient(circle at 10% 90%, #FFB347 13px, transparent 13px);
+            z-index: 1;
+            opacity: 0.3;
+        }
+        
+        .header > * {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            color: white;
+        }
+        
+        .storage-status {
+            position: absolute;
+            top: 20px;
+            left: 15px;
+            padding: 10px 16px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            z-index: 3;
+        }
+        
+        .storage-status::before {
+            content: '🌈 ';
+            font-size: 1.2em;
+        }
+        
+        .nav-buttons {
+            position: absolute;
+            top: 20px;
+            right: 15px;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            border-color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .weekday {
+            padding: 12px 5px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #495057;
+            border-right: 1px solid #e9ecef;
+        }
+        
+        .weekday:last-child {
+            border-right: none;
+        }
+        
+        .weekday.sunday {
+            color: #dc3545;
+        }
+        
+        .weekday.saturday {
+            color: #007bff;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+        
+        .calendar-day {
+            min-height: 100px;
+            border-right: 1px solid #e9ecef;
+            border-bottom: 1px solid #e9ecef;
+            padding: 8px 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            position: relative;
+            touch-action: manipulation;
+        }
+        
+        .calendar-day:nth-child(7n) {
+            border-right: none;
+        }
+        
+        .calendar-day:hover, .calendar-day:active {
+            background: #f8f9fa;
+            transform: scale(1.02);
+            z-index: 1;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .day-number {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+        
+        .other-month {
+            color: #adb5bd;
+            background: #f8f9fa;
+        }
+        
+        .other-month .day-number {
+            color: #adb5bd !important;
+        }
+        
+        .today {
+            background: rgba(64, 224, 208, 0.4);
+        }
+        
+        .today .day-number {
+            color: white;
+        }
+        
+        .sunday .day-number {
+            color: #dc3545;
+        }
+        
+        .saturday .day-number {
+            color: #007bff;
+        }
+        
+        .events {
+            margin-top: 6px;
+        }
+        
+        .event {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            margin-bottom: 2px;
+            cursor: pointer;
+            line-height: 1.2;
+        }
+        
+        .holiday-event {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .school-event {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        /* 모바일 최적화 스타일 */
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            
+            .calendar-container {
+                border-radius: 8px;
+                margin: 0;
+                max-width: 100%;
+            }
+            
+            .header {
+                padding: 15px 10px;
+                min-height: 160px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+                margin-bottom: 10px;
+            }
+            
+            .storage-status {
+                top: 10px;
+                left: 10px;
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .nav-buttons {
+                top: 10px;
+                right: 10px;
+                gap: 4px;
+            }
+            
+            .nav-btn {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+            
+            .weekday {
+                padding: 8px 2px;
+                font-size: 0.75rem;
+            }
+            
+            .calendar-day {
+                min-height: 80px;
+                padding: 6px 3px;
+            }
+            
+            .day-number {
+                font-size: 1rem;
+                margin-bottom: 4px;
+            }
+            
+            .event {
+                font-size: 0.6rem;
+                padding: 1px 3px;
+                margin-bottom: 1px;
+            }
+            
+            .current-date {
+                font-size: 0.9rem;
+                margin-top: 80px;
+            }
+            
+            .current-time {
+                font-size: 0.8rem;
+                margin-top: 5px;
+            }
+            
+            /* 월/년 변경 버튼 */
+            .header div[style*="position: absolute; top: 60px"] {
+                top: 45px !important;
+            }
+            
+            .header div[style*="position: absolute; top: 60px"] h1 {
+                font-size: 1.6rem !important;
+            }
+            
+            .header div[style*="position: absolute; top: 60px"] button {
+                width: 30px !important;
+                height: 30px !important;
+                font-size: 1.2rem !important;
+            }
+        }
+
+        /* 작은 모바일 화면 (iPhone SE 등) */
+        @media (max-width: 480px) {
+            .calendar-day {
+                min-height: 70px;
+                padding: 4px 2px;
+            }
+            
+            .day-number {
+                font-size: 0.9rem;
+            }
+            
+            .event {
+                font-size: 0.55rem;
+            }
+            
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            
+            .current-date {
+                font-size: 0.8rem;
+            }
+            
+            .current-time {
+                font-size: 0.7rem;
+            }
+        }
+        
+        /* 태블릿 최적화 */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            body {
+                padding: 15px;
+            }
+            
+            .calendar-day {
+                min-height: 110px;
+            }
+            
+            .header {
+                min-height: 220px;
+                padding: 25px;
+            }
+        }
+
+        /* 영어 공부 모달 스타일 */
+        .study-modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            overflow-y: auto;
+        }
+        
+        .study-modal-content {
+            background: linear-gradient(135deg, #E8F5E8 0%, #B8E6B8 50%, #90EE90 100%);
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 920px;
+            min-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            border: 8px solid white;
+        }
+        
+        /* 모바일 학습 모달 최적화 */
+        @media (max-width: 768px) {
+            .study-modal {
+                padding: 0;
+            }
+            
+            .study-modal-content {
+                width: 100%;
+                height: 100vh;
+                margin: 0;
+                min-height: 100vh;
+                max-height: 100vh;
+                border-radius: 0;
+                border: none;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .notebook-holes {
+                display: none; /* 모바일에서는 노트북 구멍 숨기기 */
+            }
+            
+            .study-header {
+                padding: 15px 20px 10px;
+                margin: 10px 15px;
+                margin-top: 40px; /* 상태바 고려 */
+                border-radius: 8px;
+                transform: none; /* 회전 효과 제거 */
+            }
+            
+            .study-header h2 {
+                font-size: 1.6rem;
+            }
+            
+            .study-content-area {
+                padding: 30px 20px 120px; /* 하단 버튼 공간 확보 */
+                margin: 15px;
+                min-height: calc(100vh - 200px);
+                border-radius: 12px;
+            }
+            
+            .word-visual {
+                width: 150px;
+                height: 150px;
+                margin: 15px 0;
+            }
+            
+            .word-visual div {
+                font-size: 4rem !important;
+            }
+            
+            .word-english {
+                font-size: 2rem;
+                margin: 10px 0 8px 0;
+            }
+            
+            .word-korean {
+                font-size: 1.3rem;
+                margin-bottom: 10px;
+            }
+            
+            .pronunciation-guide {
+                font-size: 0.95rem;
+                padding: 8px 12px;
+                margin: 8px auto 0;
+            }
+            
+            .audio-button {
+                width: 55px;
+                height: 55px;
+                font-size: 1.8rem;
+            }
+            
+            .close-study {
+                top: 10px;
+                right: 15px;
+                font-size: 28px;
+                width: 35px;
+                height: 35px;
+                background: rgba(255, 255, 255, 0.9);
+                border-radius: 50%;
+                color: #666;
+            }
+            
+            .navigation-buttons {
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: calc(100% - 40px);
+                max-width: 320px;
+                z-index: 20;
+                background: rgba(255, 255, 255, 0.95);
+                padding: 15px 20px;
+                border-radius: 25px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+                backdrop-filter: blur(10px);
+            }
+            
+            .nav-study-btn {
+                min-width: 70px;
+                height: 50px;
+                font-size: 0.9rem;
+                padding: 0 15px;
+                border-radius: 25px;
+                border: 2px solid #4ECDC4;
+            }
+            
+            /* 문장 학습 모드 최적화 */
+            .study-content-area[style*="font-size: 2rem"] .word-english {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* 아주 작은 화면 (iPhone SE 등) */
+        @media (max-width: 480px) {
+            .study-header h2 {
+                font-size: 1.4rem;
+            }
+            
+            .word-english {
+                font-size: 1.8rem;
+            }
+            
+            .word-korean {
+                font-size: 1.2rem;
+            }
+            
+            .word-visual {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .word-visual div {
+                font-size: 3.5rem !important;
+            }
+            
+            .audio-button {
+                width: 50px;
+                height: 50px;
+                font-size: 1.6rem;
+            }
+            
+            .navigation-buttons {
+                width: calc(100% - 30px);
+                padding: 12px 15px;
+            }
+            
+            .nav-study-btn {
+                min-width: 65px;
+                height: 45px;
+                font-size: 0.8rem;
+                padding: 0 12px;
+            }
+        }
+
+        /* 가로 모드 최적화 */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .study-modal-content {
+                height: 100vh;
+            }
+            
+            .study-content-area {
+                padding: 20px 20px 100px;
+                min-height: calc(100vh - 140px);
+            }
+            
+            .study-header {
+                margin-top: 20px;
+                padding: 10px 20px 8px;
+            }
+            
+            .study-header h2 {
+                font-size: 1.4rem;
+            }
+            
+            .word-visual {
+                width: 100px;
+                height: 100px;
+                margin: 10px 0;
+            }
+            
+            .word-visual div {
+                font-size: 3rem !important;
+            }
+            
+            .word-english {
+                font-size: 1.6rem;
+            }
+            
+            .navigation-buttons {
+                bottom: 15px;
+                padding: 10px 15px;
+            }
+        }
+        
+        .notebook-holes {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            padding: 0 30px;
+            z-index: 10;
+        }
+        
+        .notebook-hole {
+            width: 18px;
+            height: 18px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            border: 2px solid #A8E6A8;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .study-header {
+            background: #F4E4A1;
+            padding: 25px 30px 15px;
+            text-align: center;
+            position: relative;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+            margin: 0 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transform: rotate(-1deg);
+        }
+        
+        .study-header h2 {
+            font-size: 2.2rem;
+            margin: 0;
+            color: #5A5A5A;
+            font-weight: 700;
+        }
+        
+        .study-content-area {
+            padding: 50px 40px;
+            background: white;
+            min-height: 560px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px;
+            border-radius: 15px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .word-visual {
+            width: 200px;
+            height: 200px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .word-english {
+            font-size: 2.6rem;
+            font-weight: 800;
+            text-align: center;
+            line-height: 1.3;
+            margin: 8px 0 4px 0;
+        }
+        
+        .word-korean {
+            font-size: 1.6rem;
+            text-align: center;
+            color: #6b7c8f;
+            margin-bottom: 8px;
+        }
+        
+        .pronunciation-guide {
+            display: inline-block;
+            margin: 6px auto 0;
+            padding: 6px 10px;
+            font-size: 1.05rem;
+            color: #2a6ecf;
+            border: 1px solid rgba(42,110,207,.35);
+            border-radius: 12px;
+        }
+        
+        .audio-button {
+            width: 66px;
+            height: 66px;
+            border-radius: 50%;
+            border: none;
+            background: radial-gradient(circle at 50% 40%, #C5F5E8, #A8E6D4);
+            color: #2D5A4A;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 10px 24px rgba(168, 230, 212, 0.4);
+        }
+        
+        .audio-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(93, 173, 226, 0.6);
+        }
+        
+        .close-study {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #7F8C8D;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            z-index: 20;
+        }
+        
+        .close-study:hover {
+            background: rgba(0, 0, 0, 0.1);
+            transform: scale(1.1);
+        }
+        
+        .feedback-area {
+            margin-top: 20px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .navigation-buttons {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: space-between;
+            width: 300px;
+            z-index: 10;
+        }
+        
+        .nav-study-btn {
+            width: auto;
+            min-width: 80px;
+            height: 50px;
+            border-radius: 25px;
+            border: 3px solid #4ECDC4;
+            background: white;
+            color: #4ECDC4;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 0 15px;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-study-btn:hover {
+            background: #4ECDC4;
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4);
+        }
+        
+        .nav-study-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .nav-study-btn:disabled:hover {
+            background: white;
+            color: #4ECDC4;
+            transform: none;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+        }
+        
+        /* 일정 관리 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-container">
+        <div class="header">
+            <div class="storage-status">오늘영어</div>
+            <div style="position: absolute; top: 60px; left: 50%; transform: translateX(-50%); z-index: 3;">
+                <h1 id="monthYear" style="margin: 0; font-size: 2.2rem; font-weight: 700; text-shadow: 3px 3px 6px rgba(0,0,0,0.3);">로딩중...</h1>
+            </div>
+            <div class="current-date" style="margin-top: 100px;">오늘: <span id="current-date-text">로딩중...</span></div>
+            <div class="current-time" style="font-size: 1rem; margin-top: 8px; font-weight: 500; color: white;">
+                현재 시간: <span id="current-time">로딩중...</span>
+            </div>
+            <div class="nav-buttons" style="display: flex; gap: 8px;">
+                <button onclick="goToPreviousMonth()" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4); border: 2px solid rgba(255, 255, 255, 0.8); color: white; padding: 8px 12px; border-radius: 25px; cursor: pointer; font-weight: 600; font-size: 1.2rem; box-shadow: 0 3px 10px rgba(0,0,0,0.2); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.4)'" onmouseout="this.style.background='linear-gradient(45deg, #FF6B6B, #4ECDC4)'">‹</button>
+                <button class="nav-btn" onclick="goToToday()">오늘</button>
+                <button onclick="goToNextMonth()" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4); border: 2px solid rgba(255, 255, 255, 0.8); color: white; padding: 8px 12px; border-radius: 25px; cursor: pointer; font-weight: 600; font-size: 1.2rem; box-shadow: 0 3px 10px rgba(0,0,0,0.2); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.4)'" onmouseout="this.style.background='linear-gradient(45deg, #FF6B6B, #4ECDC4)'">›</button>
+            </div>
+        </div>
+        
+        <div class="weekdays">
+            <div class="weekday sunday">일</div>
+            <div class="weekday">월</div>
+            <div class="weekday">화</div>
+            <div class="weekday">수</div>
+            <div class="weekday">목</div>
+            <div class="weekday">금</div>
+            <div class="weekday saturday">토</div>
+        </div>
+        
+        <div class="calendar-grid" id="calendar-grid">
+            <!-- 달력이 여기에 동적으로 생성됩니다 -->
+        </div>
+    </div>
+
+    <!-- 영어 공부 모달 -->
+    <div id="studyModal" class="study-modal">
+        <div class="study-modal-content">
+            <div class="notebook-holes">
+                <div class="notebook-hole"></div>
+                <div class="notebook-hole"></div>
+                <div class="notebook-hole"></div>
+                <div class="notebook-hole"></div>
+                <div class="notebook-hole"></div>
+                <div class="notebook-hole"></div>
+                <div class="notebook-hole"></div>
+                <div class="notebook-hole"></div>
+                <div class="notebook-hole"></div>
+            </div>
+            
+            <button class="close-study" onclick="closeStudyModal()">&times;</button>
+            
+            <div class="study-header">
+                <h2 id="studyTitle">7단원. I Have a Pencil</h2>
+            </div>
+            
+            <div class="study-content-area" id="wordContainer">
+                <!-- 학습 내용이 여기에 동적으로 삽입됩니다 -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 전역 변수
+        let currentDate = new Date();
+        let displayDate = new Date();
+        let selectedDate = null; // 선택된 날짜 저장
+        let events = {};
+        let completedDates = {}; // 완료된 날짜 추적
+        
+        const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+        const weekdayNames = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+        
+        let currentStudyType = 'vocabulary';
+        let currentStudyIndex = 0;
+
+        // 7단원 학습 데이터
+        const unit7Data = {
+            // 필수 핵심 단어 5개 (매일 이 중 2개 선택)
+            coreVocabulary: [
+                { english: 'crayon', korean: '크레용', image: '🖍️', pronunciation: '크레이온' },
+                { english: 'eraser', korean: '지우개', image: '🧽', pronunciation: '이레이저' },
+                { english: 'pen', korean: '펜', image: '🖊️', pronunciation: '펜' },
+                { english: 'pencil', korean: '연필', image: '✏️', pronunciation: '펜슬' },
+                { english: 'ruler', korean: '자', image: '📏', pronunciation: '룰러' }
+            ],
+            // 추가 학용품 단어 (매일 3개 랜덤 선택)
+            extendedVocabulary: [
+                { english: 'book', korean: '책', image: '📘', pronunciation: '북' },
+                { english: 'bag', korean: '가방', image: '🎒', pronunciation: '백' },
+                { english: 'notebook', korean: '공책', image: '📓', pronunciation: '노트북' },
+                { english: 'paper', korean: '종이', image: '📄', pronunciation: '페이퍼' },
+                { english: 'scissors', korean: '가위', image: '✂️', pronunciation: '시저즈' },
+                { english: 'glue', korean: '풀', image: '🧴', pronunciation: '글루' },
+                { english: 'marker', korean: '마커', image: '🖍️', pronunciation: '마커' },
+                { english: 'pencil case', korean: '필통', image: '🗃️', pronunciation: '펜슬 케이스' },
+                { english: 'sharpener', korean: '연필깎이', image: '⚙️', pronunciation: '샤프너' },
+                { english: 'highlighter', korean: '형광펜', image: '🖍️', pronunciation: '하이라이터' },
+                { english: 'binder', korean: '바인더', image: '📋', pronunciation: '바인더' },
+                { english: 'folder', korean: '파일', image: '📂', pronunciation: '폴더' },
+                { english: 'calculator', korean: '계산기', image: '🧮', pronunciation: '캘큘레이터' },
+                { english: 'compass', korean: '컴퍼스', image: '📐', pronunciation: '컴퍼스' },
+                { english: 'protractor', korean: '각도기', image: '📐', pronunciation: '프로트랙터' },
+                { english: 'stapler', korean: '스테이플러', image: '📎', pronunciation: '스테이플러' },
+                { english: 'tape', korean: '테이프', image: '📦', pronunciation: '테이프' }
+            ],
+            // 패턴별 문장 구조
+            sentencePatterns: {
+                // 1. "Do you have a/an + 학용품?" (7개) - 질문 패턴
+                questions: [
+                    { english: 'Do you have a pen?', korean: '펜 있어?', pronunciation: '두 유 해브 어 펜?' },
+                    { english: 'Do you have a pencil?', korean: '연필 있어?', pronunciation: '두 유 해브 어 펜슬?' },
+                    { english: 'Do you have an eraser?', korean: '지우개 있어?', pronunciation: '두 유 해브 언 이레이저?' },
+                    { english: 'Do you have a ruler?', korean: '자 있어?', pronunciation: '두 유 해브 어 룰러?' },
+                    { english: 'Do you have a notebook?', korean: '공책 있어?', pronunciation: '두 유 해브 어 노트북?' },
+                    { english: 'Do you have a marker?', korean: '마커 있어?', pronunciation: '두 유 해브 어 마커?' },
+                    { english: 'Do you have a crayon?', korean: '크레용 있어?', pronunciation: '두 유 해브 어 크레이온?' }
+                ],
+                // 2. "Yes, I do. / No, I don't." (2개) - 답변 패턴
+                answers: [
+                    { english: 'Yes, I do.', korean: '네, 있어요.', pronunciation: '예스, 아이 두' },
+                    { english: 'No, I don\'t.', korean: '아니요, 없어요.', pronunciation: '노, 아이 돈트' }
+                ],
+                // 3. "I have a/an + 학용품." (6개) - 소유 긍정 패턴
+                positiveOwnership: [
+                    { english: 'I have a pen.', korean: '나는 펜이 있어요.', pronunciation: '아이 해브 어 펜' },
+                    { english: 'I have a pencil.', korean: '나는 연필이 있어요.', pronunciation: '아이 해브 어 펜슬' },
+                    { english: 'I have an eraser.', korean: '나는 지우개가 있어요.', pronunciation: '아이 해브 언 이레이저' },
+                    { english: 'I have a book.', korean: '나는 책이 있어요.', pronunciation: '아이 해브 어 북' },
+                    { english: 'I have a ruler.', korean: '나는 자가 있어요.', pronunciation: '아이 해브 어 룰러' },
+                    { english: 'I have a bag.', korean: '나는 가방이 있어요.', pronunciation: '아이 해브 어 백' }
+                ],
+                // 4. "I don't have a/an + 학용품." (5개) - 소유 부정 패턴
+                negativeOwnership: [
+                    { english: 'I don\'t have a pen.', korean: '나는 펜이 없어요.', pronunciation: '아이 돈트 해브 어 펜' },
+                    { english: 'I don\'t have a pencil.', korean: '나는 연필이 없어요.', pronunciation: '아이 돈트 해브 어 펜슬' },
+                    { english: 'I don\'t have an eraser.', korean: '나는 지우개가 없어요.', pronunciation: '아이 돈트 해브 언 이레이저' },
+                    { english: 'I don\'t have a ruler.', korean: '나는 자가 없어요.', pronunciation: '아이 돈트 해브 어 룰러' },
+                    { english: 'I don\'t have a crayon.', korean: '나는 크레용이 없어요.', pronunciation: '아이 돈트 해브 어 크레이온' }
+                ],
+                // 5. 도움 요청/답변 (3개) - 예의 표현 패턴
+                helpRequests: [
+                    { english: 'Can I borrow your eraser?', korean: '지우개 빌려줄 수 있어?', pronunciation: '캔 아이 보로 유어 이레이저?' },
+                    { english: 'May I use your ruler?', korean: '자를 써도 될까요?', pronunciation: '메이 아이 유즈 유어 룰러?' },
+                    { english: 'Here you are.', korean: '여기 있어요.', pronunciation: '히어 유 아' }
+                ],
+                // 6. "I need a/an + 학용품." (5개) - 필요 표현 패턴
+                needExpressions: [
+                    { english: 'I need a pen.', korean: '나는 펜이 필요해요.', pronunciation: '아이 니드 어 펜' },
+                    { english: 'I need a pencil.', korean: '나는 연필이 필요해요.', pronunciation: '아이 니드 어 펜슬' },
+                    { english: 'I need an eraser.', korean: '나는 지우개가 필요해요.', pronunciation: '아이 니드 언 이레이저' },
+                    { english: 'I need a new notebook.', korean: '나는 새 공책이 필요해요.', pronunciation: '아이 니드 어 뉴 노트북' },
+                    { english: 'I need a ruler.', korean: '나는 자가 필요해요.', pronunciation: '아이 니드 어 룰러' }
+                ],
+                // 7. "This is my + 학용품." (4개) - 소유 지시 패턴
+                demonstrative: [
+                    { english: 'This is my pen.', korean: '이것은 내 펜이에요.', pronunciation: '디스 이즈 마이 펜' },
+                    { english: 'This is my pencil.', korean: '이것은 내 연필이에요.', pronunciation: '디스 이즈 마이 펜슬' },
+                    { english: 'This is my book.', korean: '이것은 내 책이에요.', pronunciation: '디스 이즈 마이 북' },
+                    { english: 'This is my bag.', korean: '이것은 내 가방이에요.', pronunciation: '디스 이즈 마이 백' }
+                ],
+                // 8. "Where is my + 학용품?" (4개) - 위치 질문 패턴
+                locationQuestions: [
+                    { english: 'Where is my pen?', korean: '내 펜이 어디 있지?', pronunciation: '웨어 이즈 마이 펜?' },
+                    { english: 'Where is my pencil?', korean: '내 연필이 어디 있지?', pronunciation: '웨어 이즈 마이 펜슬?' },
+                    { english: 'Where is my eraser?', korean: '내 지우개가 어디 있지?', pronunciation: '웨어 이즈 마이 이레이저?' },
+                    { english: 'Where is my crayon?', korean: '내 크레용이 어디 있지?', pronunciation: '웨어 이즈 마이 크레이온?' }
+                ]
+            }
+        };
+
+        // 11단원 학습 데이터 (How's the Weather?)
+        const unit11Data = {
+            // 필수 핵심 날씨 단어 5개 (매일 이 중 2개 선택)
+            coreVocabulary: [
+                { english: 'sunny', korean: '맑은', image: '☀️', pronunciation: '써니' },
+                { english: 'raining', korean: '비 오는', image: '🌧️', pronunciation: '레이닝' },
+                { english: 'cloudy', korean: '흐린', image: '☁️', pronunciation: '클라우디' },
+                { english: 'windy', korean: '바람 부는', image: '💨', pronunciation: '윈디' },
+                { english: 'snowing', korean: '눈 오는', image: '❄️', pronunciation: '스노잉' }
+            ],
+            // 추가 날씨/계절 관련 단어 (매일 3개 랜덤 선택)
+            extendedVocabulary: [
+                { english: 'hot', korean: '더운', image: '🔥', pronunciation: '핫' },
+                { english: 'cold', korean: '추운', image: '🧊', pronunciation: '콜드' },
+                { english: 'warm', korean: '따뜻한', image: '🌤️', pronunciation: '웜' },
+                { english: 'cool', korean: '시원한', image: '🍃', pronunciation: '쿨' },
+                { english: 'rainy', korean: '비 오는', image: '☔', pronunciation: '레이니' },
+                { english: 'snowy', korean: '눈 오는', image: '⛄', pronunciation: '스노이' },
+                { english: 'stormy', korean: '폭풍우 치는', image: '⛈️', pronunciation: '스토미' },
+                { english: 'foggy', korean: '안개 낀', image: '🌫️', pronunciation: '포기' },
+                { english: 'humid', korean: '습한', image: '💧', pronunciation: '휴미드' },
+                { english: 'dry', korean: '건조한', image: '🏜️', pronunciation: '드라이' },
+                { english: 'weather', korean: '날씨', image: '🌈', pronunciation: '웨더' },
+                { english: 'temperature', korean: '온도', image: '🌡️', pronunciation: '템퍼러처' },
+                { english: 'umbrella', korean: '우산', image: '☂️', pronunciation: '엄브렐라' },
+                { english: 'raincoat', korean: '비옷', image: '🧥', pronunciation: '레인코트' },
+                { english: 'jacket', korean: '재킷', image: '🧥', pronunciation: '재킷' },
+                { english: 'sweater', korean: '스웨터', image: '👕', pronunciation: '스웨터' },
+                { english: 'outside', korean: '밖에', image: '🚪', pronunciation: '아웃사이드' },
+                { english: 'inside', korean: '안에', image: '🏠', pronunciation: '인사이드' },
+                { english: 'sky', korean: '하늘', image: '🌌', pronunciation: '스카이' },
+                { english: 'cloud', korean: '구름', image: '☁️', pronunciation: '클라우드' }
+            ],
+            // 패턴별 문장 구조
+            sentencePatterns: {
+                // 1. "How's the weather?" (8개) - 날씨 질문 패턴
+                weatherQuestions: [
+                    { english: 'How\'s the weather?', korean: '날씨가 어때요?', pronunciation: '하우즈 더 웨더?' },
+                    { english: 'How\'s the weather today?', korean: '오늘 날씨가 어때요?', pronunciation: '하우즈 더 웨더 투데이?' },
+                    { english: 'How\'s the weather there?', korean: '거기 날씨가 어때요?', pronunciation: '하우즈 더 웨더 데어?' },
+                    { english: 'How\'s the weather outside?', korean: '밖에 날씨가 어때요?', pronunciation: '하우즈 더 웨더 아웃사이드?' },
+                    { english: 'What\'s the weather like?', korean: '날씨가 어떤가요?', pronunciation: '왓츠 더 웨더 라이크?' },
+                    { english: 'Is it sunny?', korean: '맑아요?', pronunciation: '이즈 잇 써니?' },
+                    { english: 'Is it raining?', korean: '비 와요?', pronunciation: '이즈 잇 레이닝?' },
+                    { english: 'Is it cold?', korean: '추워요?', pronunciation: '이즈 잇 콜드?' }
+                ],
+                // 2. "It's + 날씨" (10개) - 날씨 답변 패턴
+                weatherAnswers: [
+                    { english: 'It\'s sunny.', korean: '맑아요.', pronunciation: '잇츠 써니' },
+                    { english: 'It\'s raining.', korean: '비 와요.', pronunciation: '잇츠 레이닝' },
+                    { english: 'It\'s cloudy.', korean: '흐려요.', pronunciation: '잇츠 클라우디' },
+                    { english: 'It\'s windy.', korean: '바람이 불어요.', pronunciation: '잇츠 윈디' },
+                    { english: 'It\'s snowing.', korean: '눈이 와요.', pronunciation: '잇츠 스노잉' },
+                    { english: 'It\'s hot.', korean: '더워요.', pronunciation: '잇츠 핫' },
+                    { english: 'It\'s cold.', korean: '추워요.', pronunciation: '잇츠 콜드' },
+                    { english: 'It\'s warm.', korean: '따뜻해요.', pronunciation: '잇츠 웜' },
+                    { english: 'It\'s nice.', korean: '날씨가 좋아요.', pronunciation: '잇츠 나이스' },
+                    { english: 'It\'s terrible.', korean: '날씨가 나빠요.', pronunciation: '잇츠 테러블' }
+                ],
+                // 3. 제안하기 패턴 (6개) - 활동 제안
+                suggestions: [
+                    { english: 'Let\'s go outside!', korean: '밖에 나가자!', pronunciation: '렛츠 고 아웃사이드!' },
+                    { english: 'Let\'s stay inside.', korean: '안에 있자.', pronunciation: '렛츠 스테이 인사이드' },
+                    { english: 'Let\'s play outside.', korean: '밖에서 놀자.', pronunciation: '렛츠 플레이 아웃사이드' },
+                    { english: 'Let\'s take an umbrella.', korean: '우산을 가져가자.', pronunciation: '렛츠 테이크 언 엄브렐라' },
+                    { english: 'Let\'s wear a jacket.', korean: '재킷을 입자.', pronunciation: '렛츠 웨어 어 재킷' },
+                    { english: 'Let\'s go home.', korean: '집에 가자.', pronunciation: '렛츠 고 홈' }
+                ],
+                // 4. 제안에 대한 반응 (4개) - 응답 패턴
+                responses: [
+                    { english: 'Okay!', korean: '좋아!', pronunciation: '오케이!' },
+                    { english: 'Good idea!', korean: '좋은 생각이야!', pronunciation: '굿 아이디어!' },
+                    { english: 'Yes, let\'s go!', korean: '네, 가요!', pronunciation: '예스, 렛츠 고!' },
+                    { english: 'No, thank you.', korean: '아니요, 괜찮아요.', pronunciation: '노, 땡큐' }
+                ],
+                // 5. 날씨에 대한 감정 표현 (8개) - 감정 패턴
+                feelings: [
+                    { english: 'I love sunny days!', korean: '맑은 날을 좋아해요!', pronunciation: '아이 러브 써니 데이즈!' },
+                    { english: 'I don\'t like rain.', korean: '비를 좋아하지 않아요.', pronunciation: '아이 돈트 라이크 레인' },
+                    { english: 'I love snow!', korean: '눈을 좋아해요!', pronunciation: '아이 러브 스노!' },
+                    { english: 'It\'s too hot!', korean: '너무 더워요!', pronunciation: '잇츠 투 핫!' },
+                    { english: 'It\'s too cold!', korean: '너무 추워요!', pronunciation: '잇츠 투 콜드!' },
+                    { english: 'Perfect weather!', korean: '완벽한 날씨네요!', pronunciation: '퍼펙트 웨더!' },
+                    { english: 'What a nice day!', korean: '정말 좋은 날이네요!', pronunciation: '왓 어 나이스 데이!' },
+                    { english: 'Oh, no!', korean: '오, 안 돼!', pronunciation: '오, 노!' }
+                ],
+                // 6. 날씨 관련 활동 (6개) - 활동 패턴
+                activities: [
+                    { english: 'Let\'s make a snowman!', korean: '눈사람을 만들자!', pronunciation: '렛츠 메이크 어 스노맨!' },
+                    { english: 'Let\'s fly a kite!', korean: '연을 날리자!', pronunciation: '렛츠 플라이 어 카이트!' },
+                    { english: 'Let\'s have a picnic!', korean: '피크닉을 하자!', pronunciation: '렛츠 해브 어 피크닉!' },
+                    { english: 'I need an umbrella.', korean: '우산이 필요해요.', pronunciation: '아이 니드 언 엄브렐라' },
+                    { english: 'Put on your jacket.', korean: '재킷을 입으세요.', pronunciation: '풋 온 유어 재킷' },
+                    { english: 'Close the window.', korean: '창문을 닫으세요.', pronunciation: '클로즈 더 윈도' }
+                ],
+                // 7. 시간대별 날씨 (5개) - 시간 패턴
+                timeWeather: [
+                    { english: 'It\'s sunny in the morning.', korean: '아침에는 맑아요.', pronunciation: '잇츠 써니 인 더 모닝' },
+                    { english: 'It\'s cloudy this afternoon.', korean: '오늘 오후에는 흐려요.', pronunciation: '잇츠 클라우디 디스 애프터눈' },
+                    { english: 'It will rain tonight.', korean: '오늘 밤에 비가 올 거예요.', pronunciation: '잇 윌 레인 투나잇' },
+                    { english: 'Tomorrow will be sunny.', korean: '내일은 맑을 거예요.', pronunciation: '투모로 윌 비 써니' },
+                    { english: 'Yesterday was cold.', korean: '어제는 추웠어요.', pronunciation: '예스터데이 워즈 콜드' }
+                ],
+                // 8. 놀람/확인 표현 (4개) - 반응 패턴
+                exclamations: [
+                    { english: 'Wow! It\'s beautiful!', korean: '와! 아름다워요!', pronunciation: '와! 잇츠 뷰티풀!' },
+                    { english: 'Look at the sky!', korean: '하늘을 봐요!', pronunciation: '룩 앳 더 스카이!' },
+                    { english: 'What a storm!', korean: '정말 큰 폭풍이네요!', pronunciation: '왓 어 스톰!' },
+                    { english: 'So much snow!', korean: '눈이 정말 많이 와요!', pronunciation: '소 머치 스노!' }
+                ]
+            }
+        };
+
+        // 10단원 학습 데이터 (Who's He?)
+        const unit10Data = {
+            // 필수 핵심 가족 단어 6개 (매일 이 중 2개 선택)
+            coreVocabulary: [
+                { english: 'brother', korean: '형/오빠/남동생', image: '👦', pronunciation: '브라더' },
+                { english: 'dad', korean: '아빠', image: '👨', pronunciation: '대드' },
+                { english: 'grandma', korean: '할머니', image: '👵', pronunciation: '그랜드마' },
+                { english: 'grandpa', korean: '할아버지', image: '👴', pronunciation: '그랜드파' },
+                { english: 'mom', korean: '엄마', image: '👩', pronunciation: '맘' },
+                { english: 'sister', korean: '언니/누나/여동생', image: '👧', pronunciation: '시스터' }
+            ],
+            // 추가 가족/사람 관련 단어 (매일 3개 랜덤 선택)
+            extendedVocabulary: [
+                { english: 'family', korean: '가족', image: '👨‍👩‍👧‍👦', pronunciation: '패밀리' },
+                { english: 'baby', korean: '아기', image: '👶', pronunciation: '베이비' },
+                { english: 'uncle', korean: '삼촌', image: '👨‍🦲', pronunciation: '엉클' },
+                { english: 'aunt', korean: '이모/고모', image: '👩‍🦱', pronunciation: '앤트' },
+                { english: 'cousin', korean: '사촌', image: '🧑', pronunciation: '커즌' },
+                { english: 'friend', korean: '친구', image: '👫', pronunciation: '프렌드' },
+                { english: 'teacher', korean: '선생님', image: '👩‍🏫', pronunciation: '티처' },
+                { english: 'student', korean: '학생', image: '🧑‍🎓', pronunciation: '스튜던트' },
+                { english: 'boy', korean: '남자아이', image: '👦', pronunciation: '보이' },
+                { english: 'girl', korean: '여자아이', image: '👧', pronunciation: '걸' },
+                { english: 'man', korean: '남자', image: '👨', pronunciation: '맨' },
+                { english: 'woman', korean: '여자', image: '👩', pronunciation: '우먼' },
+                { english: 'people', korean: '사람들', image: '👥', pronunciation: '피플' },
+                { english: 'child', korean: '아이', image: '🧒', pronunciation: '차일드' },
+                { english: 'person', korean: '사람', image: '🧑', pronunciation: '퍼슨' },
+                { english: 'neighbor', korean: '이웃', image: '🏠', pronunciation: '네이버' },
+                { english: 'classmate', korean: '반 친구', image: '👭', pronunciation: '클래스메이트' }
+            ],
+            // 패턴별 문장 구조
+            sentencePatterns: {
+                // 1. "Who is he/she?" (8개) - 질문 패턴
+                questions: [
+                    { english: 'Who is he?', korean: '그는 누구예요?', pronunciation: '후 이즈 히?' },
+                    { english: 'Who is she?', korean: '그녀는 누구예요?', pronunciation: '후 이즈 쉬?' },
+                    { english: 'Who is this?', korean: '이분은 누구예요?', pronunciation: '후 이즈 디스?' },
+                    { english: 'Who is that?', korean: '저분은 누구예요?', pronunciation: '후 이즈 댓?' },
+                    { english: 'Who is the boy?', korean: '그 남자아이는 누구예요?', pronunciation: '후 이즈 더 보이?' },
+                    { english: 'Who is the girl?', korean: '그 여자아이는 누구예요?', pronunciation: '후 이즈 더 걸?' },
+                    { english: 'Who is the man?', korean: '그 남자는 누구예요?', pronunciation: '후 이즈 더 맨?' },
+                    { english: 'Who is the woman?', korean: '그 여자는 누구예요?', pronunciation: '후 이즈 더 우먼?' }
+                ],
+                // 2. "He's/She's my + 가족." (12개) - 답변 패턴
+                familyAnswers: [
+                    { english: 'He\'s my dad.', korean: '제 아빠예요.', pronunciation: '히즈 마이 대드' },
+                    { english: 'She\'s my mom.', korean: '제 엄마예요.', pronunciation: '쉬즈 마이 맘' },
+                    { english: 'He\'s my brother.', korean: '제 형/오빠/남동생이에요.', pronunciation: '히즈 마이 브라더' },
+                    { english: 'She\'s my sister.', korean: '제 언니/누나/여동생이에요.', pronunciation: '쉬즈 마이 시스터' },
+                    { english: 'He\'s my grandpa.', korean: '제 할아버지예요.', pronunciation: '히즈 마이 그랜드파' },
+                    { english: 'She\'s my grandma.', korean: '제 할머니예요.', pronunciation: '쉬즈 마이 그랜드마' },
+                    { english: 'He\'s my uncle.', korean: '제 삼촌이에요.', pronunciation: '히즈 마이 엉클' },
+                    { english: 'She\'s my aunt.', korean: '제 이모/고모예요.', pronunciation: '쉬즈 마이 앤트' },
+                    { english: 'He\'s my friend.', korean: '제 친구예요.', pronunciation: '히즈 마이 프렌드' },
+                    { english: 'She\'s my friend.', korean: '제 친구예요.', pronunciation: '쉬즈 마이 프렌드' },
+                    { english: 'He\'s my teacher.', korean: '제 선생님이에요.', pronunciation: '히즈 마이 티처' },
+                    { english: 'She\'s my teacher.', korean: '제 선생님이에요.', pronunciation: '쉬즈 마이 티처' }
+                ],
+                // 3. 외모 묘사 패턴 (8개) - 특징 표현
+                appearanceDescription: [
+                    { english: 'He\'s tall.', korean: '그는 키가 커요.', pronunciation: '히즈 톨' },
+                    { english: 'She\'s pretty.', korean: '그녀는 예뻐요.', pronunciation: '쉬즈 프리티' },
+                    { english: 'He\'s very tall.', korean: '그는 아주 키가 커요.', pronunciation: '히즈 베리 톨' },
+                    { english: 'She\'s very pretty.', korean: '그녀는 아주 예뻐요.', pronunciation: '쉬즈 베리 프리티' },
+                    { english: 'He\'s short.', korean: '그는 키가 작아요.', pronunciation: '히즈 쇼트' },
+                    { english: 'She\'s short.', korean: '그녀는 키가 작아요.', pronunciation: '쉬즈 쇼트' },
+                    { english: 'He\'s young.', korean: '그는 젊어요.', pronunciation: '히즈 영' },
+                    { english: 'She\'s young.', korean: '그녀는 젊어요.', pronunciation: '쉬즈 영' }
+                ],
+                // 4. 감탄/반응 표현 (6개) - 감정 반응 패턴
+                reactions: [
+                    { english: 'Wow!', korean: '와!', pronunciation: '와!' },
+                    { english: 'Oh!', korean: '오!', pronunciation: '오!' },
+                    { english: 'Great!', korean: '멋져!', pronunciation: '그레이트!' },
+                    { english: 'Cool!', korean: '멋있어!', pronunciation: '쿨!' },
+                    { english: 'Nice!', korean: '좋아!', pronunciation: '나이스!' },
+                    { english: 'Amazing!', korean: '놀라워!', pronunciation: '어메이징!' }
+                ],
+                // 5. 소개 패턴 (6개) - 소개 표현
+                introductions: [
+                    { english: 'This is my family.', korean: '이분들은 제 가족이에요.', pronunciation: '디스 이즈 마이 패밀리' },
+                    { english: 'This is my dad.', korean: '이분은 제 아빠예요.', pronunciation: '디스 이즈 마이 대드' },
+                    { english: 'This is my mom.', korean: '이분은 제 엄마예요.', pronunciation: '디스 이즈 마이 맘' },
+                    { english: 'This is my brother.', korean: '이는 제 형/오빠/남동생이에요.', pronunciation: '디스 이즈 마이 브라더' },
+                    { english: 'This is my sister.', korean: '이는 제 언니/누나/여동생이에요.', pronunciation: '디스 이즈 마이 시스터' },
+                    { english: 'Meet my family!', korean: '제 가족을 만나세요!', pronunciation: '미트 마이 패밀리!' }
+                ],
+                // 6. 인사/대화 시작 (5개) - 상호작용 패턴
+                greetings: [
+                    { english: 'Hi there!', korean: '안녕!', pronunciation: '하이 데어!' },
+                    { english: 'Come here!', korean: '이리 와!', pronunciation: '컴 히어!' },
+                    { english: 'Look!', korean: '봐!', pronunciation: '룩!' },
+                    { english: 'Listen!', korean: '들어봐!', pronunciation: '리슨!' },
+                    { english: 'Let me introduce you.', korean: '소개할게요.', pronunciation: '렛 미 인트로듀스 유' }
+                ],
+                // 7. 확인 질문/답변 (4개) - 확인 패턴
+                confirmation: [
+                    { english: 'Yes, he is.', korean: '네, 맞아요.', pronunciation: '예스, 히 이즈' },
+                    { english: 'No, he isn\'t.', korean: '아니요, 아니에요.', pronunciation: '노, 히 이즌트' },
+                    { english: 'Yes, she is.', korean: '네, 맞아요.', pronunciation: '예스, 쉬 이즈' },
+                    { english: 'No, she isn\'t.', korean: '아니요, 아니에요.', pronunciation: '노, 쉬 이즌트' }
+                ],
+                // 8. 위치/지시 표현 (4개) - 지시 패턴
+                directions: [
+                    { english: 'Over there!', korean: '저기!', pronunciation: '오버 데어!' },
+                    { english: 'Right here!', korean: '바로 여기!', pronunciation: '라이트 히어!' },
+                    { english: 'Next to me!', korean: '내 옆에!', pronunciation: '넥스트 투 미!' },
+                    { english: 'Behind you!', korean: '네 뒤에!', pronunciation: '비하인드 유!' }
+                ]
+            }
+        };
+
+        // 8단원 학습 데이터 (Can You Swim?)
+        const unit8Data = {
+            // 필수 핵심 동작 단어 6개 (매일 이 중 2개 선택)
+            coreVocabulary: [
+                { english: 'climb', korean: '오르다', image: '🧗', pronunciation: '클라임' },
+                { english: 'dance', korean: '춤추다', image: '💃', pronunciation: '댄스' },
+                { english: 'dive', korean: '다이빙하다', image: '🏊‍♂️', pronunciation: '다이브' },
+                { english: 'sing', korean: '노래하다', image: '🎤', pronunciation: '싱' },
+                { english: 'skate', korean: '스케이트타다', image: '⛸️', pronunciation: '스케이트' },
+                { english: 'swim', korean: '수영하다', image: '🏊', pronunciation: '스윔' }
+            ],
+            // 추가 동작/스포츠 단어 (매일 3개 랜덤 선택)
+            extendedVocabulary: [
+                { english: 'run', korean: '달리다', image: '🏃', pronunciation: '런' },
+                { english: 'walk', korean: '걷다', image: '🚶', pronunciation: '워크' },
+                { english: 'jump', korean: '점프하다', image: '🦘', pronunciation: '점프' },
+                { english: 'fly', korean: '날다', image: '✈️', pronunciation: '플라이' },
+                { english: 'ride', korean: '타다', image: '🚴', pronunciation: '라이드' },
+                { english: 'draw', korean: '그리다', image: '🎨', pronunciation: '드로' },
+                { english: 'write', korean: '쓰다', image: '✏️', pronunciation: '라이트' },
+                { english: 'read', korean: '읽다', image: '📖', pronunciation: '리드' },
+                { english: 'cook', korean: '요리하다', image: '👨‍🍳', pronunciation: '쿡' },
+                { english: 'play', korean: '놀다', image: '🎮', pronunciation: '플레이' },
+                { english: 'kick', korean: '차다', image: '⚽', pronunciation: '킥' },
+                { english: 'throw', korean: '던지다', image: '🤾', pronunciation: '쓰로' },
+                { english: 'catch', korean: '잡다', image: '🥎', pronunciation: '캐치' },
+                { english: 'hit', korean: '치다', image: '🏓', pronunciation: '힛' },
+                { english: 'shoot', korean: '쏘다', image: '🏀', pronunciation: '슛' },
+                { english: 'drive', korean: '운전하다', image: '🚗', pronunciation: '드라이브' },
+                { english: 'ski', korean: '스키타다', image: '🎿', pronunciation: '스키' },
+                { english: 'surf', korean: '서핑하다', image: '🏄', pronunciation: '서프' },
+                { english: 'fish', korean: '낚시하다', image: '🎣', pronunciation: '피시' },
+                { english: 'paint', korean: '색칠하다', image: '🎨', pronunciation: '페인트' }
+            ],
+            // 패턴별 문장 구조
+            sentencePatterns: {
+                // 1. "Can you + 동작?" (8개) - 질문 패턴
+                questions: [
+                    { english: 'Can you swim?', korean: '수영할 수 있어?', pronunciation: '캔 유 스윔?' },
+                    { english: 'Can you dance?', korean: '춤출 수 있어?', pronunciation: '캔 유 댄스?' },
+                    { english: 'Can you climb?', korean: '오를 수 있어?', pronunciation: '캔 유 클라임?' },
+                    { english: 'Can you dive?', korean: '다이빙할 수 있어?', pronunciation: '캔 유 다이브?' },
+                    { english: 'Can you skate?', korean: '스케이트탈 수 있어?', pronunciation: '캔 유 스케이트?' },
+                    { english: 'Can you sing?', korean: '노래할 수 있어?', pronunciation: '캔 유 싱?' },
+                    { english: 'Can you jump?', korean: '점프할 수 있어?', pronunciation: '캔 유 점프?' },
+                    { english: 'Can you run?', korean: '달릴 수 있어?', pronunciation: '캔 유 런?' }
+                ],
+                // 2. "Yes, I can. / No, I can't." (2개) - 답변 패턴
+                answers: [
+                    { english: 'Yes, I can.', korean: '네, 할 수 있어요.', pronunciation: '예스, 아이 캔' },
+                    { english: 'No, I can\'t.', korean: '아니요, 할 수 없어요.', pronunciation: '노, 아이 캔트' }
+                ],
+                // 3. "I can + 동작." (7개) - 능력 긍정 패턴
+                positiveAbility: [
+                    { english: 'I can swim.', korean: '나는 수영할 수 있어요.', pronunciation: '아이 캔 스윔' },
+                    { english: 'I can dance.', korean: '나는 춤출 수 있어요.', pronunciation: '아이 캔 댄스' },
+                    { english: 'I can climb.', korean: '나는 오를 수 있어요.', pronunciation: '아이 캔 클라임' },
+                    { english: 'I can sing.', korean: '나는 노래할 수 있어요.', pronunciation: '아이 캔 싱' },
+                    { english: 'I can run.', korean: '나는 달릴 수 있어요.', pronunciation: '아이 캔 런' },
+                    { english: 'I can jump.', korean: '나는 점프할 수 있어요.', pronunciation: '아이 캔 점프' },
+                    { english: 'I can play.', korean: '나는 놀 수 있어요.', pronunciation: '아이 캔 플레이' }
+                ],
+                // 4. "I can't + 동작." (6개) - 능력 부정 패턴
+                negativeAbility: [
+                    { english: 'I can\'t swim.', korean: '나는 수영할 수 없어요.', pronunciation: '아이 캔트 스윔' },
+                    { english: 'I can\'t dive.', korean: '나는 다이빙할 수 없어요.', pronunciation: '아이 캔트 다이브' },
+                    { english: 'I can\'t skate.', korean: '나는 스케이트탈 수 없어요.', pronunciation: '아이 캔트 스케이트' },
+                    { english: 'I can\'t climb.', korean: '나는 오를 수 없어요.', pronunciation: '아이 캔트 클라임' },
+                    { english: 'I can\'t sing.', korean: '나는 노래할 수 없어요.', pronunciation: '아이 캔트 싱' },
+                    { english: 'I can\'t dance.', korean: '나는 춤출 수 없어요.', pronunciation: '아이 캔트 댄스' }
+                ],
+                // 5. 격려/반응 표현 (4개) - 상호작용 패턴
+                encouragement: [
+                    { english: 'Wow, great!', korean: '와, 멋져!', pronunciation: '와, 그레이트!' },
+                    { english: 'You can do it!', korean: '너는 할 수 있어!', pronunciation: '유 캔 두 잇!' },
+                    { english: 'Good job!', korean: '잘했어!', pronunciation: '굿 잡!' },
+                    { english: 'Try again!', korean: '다시 해봐!', pronunciation: '트라이 어게인!' }
+                ],
+                // 6. 상대방에게 묻기 (5개) - 호기심 패턴
+                askingOthers: [
+                    { english: 'How about you?', korean: '너는 어때?', pronunciation: '하우 어바웃 유?' },
+                    { english: 'Can you help me?', korean: '도와줄 수 있어?', pronunciation: '캔 유 헬프 미?' },
+                    { english: 'Let\'s try together.', korean: '같이 해보자.', pronunciation: '렛츠 트라이 투게더' },
+                    { english: 'Show me, please.', korean: '보여주세요.', pronunciation: '쇼 미, 플리즈' },
+                    { english: 'Can you teach me?', korean: '가르쳐 줄 수 있어?', pronunciation: '캔 유 티치 미?' }
+                ],
+                // 7. 감정 표현 (4개) - 감정 패턴
+                feelings: [
+                    { english: 'I\'m scared.', korean: '무서워요.', pronunciation: '아임 스케어드' },
+                    { english: 'It\'s fun!', korean: '재미있어!', pronunciation: '잇츠 펀!' },
+                    { english: 'It\'s easy.', korean: '쉬워요.', pronunciation: '잇츠 이지' },
+                    { english: 'It\'s hard.', korean: '어려워요.', pronunciation: '잇츠 하드' }
+                ],
+                // 8. 제안/명령 (5개) - 행동 유도 패턴
+                suggestions: [
+                    { english: 'Let\'s swim!', korean: '수영하자!', pronunciation: '렛츠 스윔!' },
+                    { english: 'Come here!', korean: '이리 와!', pronunciation: '컴 히어!' },
+                    { english: 'Look at me!', korean: '나를 봐!', pronunciation: '룩 앳 미!' },
+                    { english: 'Follow me!', korean: '따라와!', pronunciation: '팔로우 미!' },
+                    { english: 'Let\'s go!', korean: '가자!', pronunciation: '렛츠 고!' }
+                ]
+            }
+        };
+
+        // 9단원 학습 데이터 (It's Big!)
+        const unit9Data = {
+            // 필수 핵심 동물 단어 6개 (매일 이 중 2개 선택)
+            coreVocabulary: [
+                { english: 'bear', korean: '곰', image: '🐻', pronunciation: '베어' },
+                { english: 'cow', korean: '소', image: '🐄', pronunciation: '카우' },
+                { english: 'duck', korean: '오리', image: '🦆', pronunciation: '덕' },
+                { english: 'lion', korean: '사자', image: '🦁', pronunciation: '라이언' },
+                { english: 'pig', korean: '돼지', image: '🐷', pronunciation: '피그' },
+                { english: 'tiger', korean: '호랑이', image: '🐅', pronunciation: '타이거' }
+            ],
+            // 추가 동물 단어 (매일 3개 랜덤 선택)
+            extendedVocabulary: [
+                { english: 'cat', korean: '고양이', image: '🐱', pronunciation: '캣' },
+                { english: 'dog', korean: '개', image: '🐶', pronunciation: '도그' },
+                { english: 'rabbit', korean: '토끼', image: '🐰', pronunciation: '래빗' },
+                { english: 'elephant', korean: '코끼리', image: '🐘', pronunciation: '엘리펀트' },
+                { english: 'horse', korean: '말', image: '🐎', pronunciation: '호스' },
+                { english: 'sheep', korean: '양', image: '🐑', pronunciation: '쉽' },
+                { english: 'chicken', korean: '닭', image: '🐓', pronunciation: '치킨' },
+                { english: 'fish', korean: '물고기', image: '🐟', pronunciation: '피시' },
+                { english: 'bird', korean: '새', image: '🐦', pronunciation: '버드' },
+                { english: 'mouse', korean: '쥐', image: '🐭', pronunciation: '마우스' },
+                { english: 'monkey', korean: '원숭이', image: '🐵', pronunciation: '먼키' },
+                { english: 'zebra', korean: '얼룩말', image: '🦓', pronunciation: '지브라' },
+                { english: 'giraffe', korean: '기린', image: '🦒', pronunciation: '지라프' },
+                { english: 'panda', korean: '판다', image: '🐼', pronunciation: '팬다' },
+                { english: 'fox', korean: '여우', image: '🦊', pronunciation: '폭스' },
+                { english: 'wolf', korean: '늑대', image: '🐺', pronunciation: '울프' },
+                { english: 'frog', korean: '개구리', image: '🐸', pronunciation: '프로그' },
+                { english: 'turtle', korean: '거북이', image: '🐢', pronunciation: '터틀' },
+                { english: 'snake', korean: '뱀', image: '🐍', pronunciation: '스네이크' },
+                { english: 'butterfly', korean: '나비', image: '🦋', pronunciation: '버터플라이' }
+            ],
+            // 패턴별 문장 구조
+            sentencePatterns: {
+                // 1. "Look! It's a + 동물." (8개) - 발견/지시 패턴
+                discovery: [
+                    { english: 'Look! It\'s a pig.', korean: '봐! 돼지야.', pronunciation: '룩! 잇츠 어 피그' },
+                    { english: 'Look! It\'s a cow.', korean: '봐! 소야.', pronunciation: '룩! 잇츠 어 카우' },
+                    { english: 'Look! It\'s a tiger.', korean: '봐! 호랑이야.', pronunciation: '룩! 잇츠 어 타이거' },
+                    { english: 'Look! It\'s a duck.', korean: '봐! 오리야.', pronunciation: '룩! 잇츠 어 덕' },
+                    { english: 'Look! It\'s a bear.', korean: '봐! 곰이야.', pronunciation: '룩! 잇츠 어 베어' },
+                    { english: 'Look! It\'s a lion.', korean: '봐! 사자야.', pronunciation: '룩! 잇츠 어 라이언' },
+                    { english: 'Look at the tiger!', korean: '호랑이를 봐!', pronunciation: '룩 앳 더 타이거!' },
+                    { english: 'Look at the bear!', korean: '곰을 봐!', pronunciation: '룩 앳 더 베어!' }
+                ],
+                // 2. "It's big. / It's small." (6개) - 크기 묘사 패턴
+                sizeDescription: [
+                    { english: 'It\'s big.', korean: '커요.', pronunciation: '잇츠 빅' },
+                    { english: 'It\'s small.', korean: '작아요.', pronunciation: '잇츠 스몰' },
+                    { english: 'It\'s very big!', korean: '매우 커요!', pronunciation: '잇츠 베리 빅!' },
+                    { english: 'It\'s very small!', korean: '매우 작아요!', pronunciation: '잇츠 베리 스몰!' },
+                    { english: 'Wow, it\'s big.', korean: '와, 커요.', pronunciation: '와, 잇츠 빅' },
+                    { english: 'Oh, it\'s small!', korean: '오, 작아요!', pronunciation: '오, 잇츠 스몰!' }
+                ],
+                // 3. "Is it a + 동물?" (7개) - 동물 확인 질문 패턴
+                animalQuestions: [
+                    { english: 'Is it a cow?', korean: '소예요?', pronunciation: '이즈 잇 어 카우?' },
+                    { english: 'Is it a pig?', korean: '돼지예요?', pronunciation: '이즈 잇 어 피그?' },
+                    { english: 'Is it a bear?', korean: '곰이예요?', pronunciation: '이즈 잇 어 베어?' },
+                    { english: 'Is it a chicken?', korean: '닭이예요?', pronunciation: '이즈 잇 어 치킨?' },
+                    { english: 'Is it a cat?', korean: '고양이예요?', pronunciation: '이즈 잇 어 캣?' },
+                    { english: 'Is it a dog?', korean: '개예요?', pronunciation: '이즈 잇 어 도그?' },
+                    { english: 'Is it a lion?', korean: '사자예요?', pronunciation: '이즈 잇 어 라이언?' }
+                ],
+                // 4. "Yes, it is. / No, it isn't." (4개) - 확인 답변 패턴
+                confirmationAnswers: [
+                    { english: 'Yes, it is.', korean: '네, 맞아요.', pronunciation: '예스, 잇 이즈' },
+                    { english: 'No, it isn\'t.', korean: '아니요, 아니에요.', pronunciation: '노, 잇 이즌트' },
+                    { english: 'No, it isn\'t. It\'s a duck.', korean: '아니요, 오리예요.', pronunciation: '노, 잇 이즌트. 잇츠 어 덕' },
+                    { english: 'No, it isn\'t. It\'s a tiger.', korean: '아니요, 호랑이예요.', pronunciation: '노, 잇 이즌트. 잇츠 어 타이거' }
+                ],
+                // 5. "What's that/this?" (5개) - 정체 확인 패턴
+                identificationQuestions: [
+                    { english: 'What\'s that?', korean: '저게 뭐예요?', pronunciation: '왓츠 댓?' },
+                    { english: 'What\'s this?', korean: '이게 뭐예요?', pronunciation: '왓츠 디스?' },
+                    { english: 'What animal is it?', korean: '무슨 동물이에요?', pronunciation: '왓 애니멀 이즈 잇?' },
+                    { english: 'What do you see?', korean: '뭐가 보여요?', pronunciation: '왓 두 유 시?' },
+                    { english: 'Can you see it?', korean: '보여요?', pronunciation: '캔 유 시 잇?' }
+                ],
+                // 6. 감탄/반응 표현 (6개) - 감정 반응 패턴
+                reactions: [
+                    { english: 'Wow!', korean: '와!', pronunciation: '와!' },
+                    { english: 'Oh, no!', korean: '오, 안돼!', pronunciation: '오, 노!' },
+                    { english: 'Great!', korean: '좋아!', pronunciation: '그레이트!' },
+                    { english: 'Amazing!', korean: '놀라워!', pronunciation: '어메이징!' },
+                    { english: 'So cute!', korean: '너무 귀여워!', pronunciation: '소 큐트!' },
+                    { english: 'How big!', korean: '얼마나 큰지!', pronunciation: '하우 빅!' }
+                ],
+                // 7. 동물 특징 표현 (5개) - 특성 묘사 패턴
+                characteristics: [
+                    { english: 'It\'s cute.', korean: '귀여워요.', pronunciation: '잇츠 큐트' },
+                    { english: 'It\'s scary.', korean: '무서워요.', pronunciation: '잇츠 스케리' },
+                    { english: 'It\'s fast.', korean: '빨라요.', pronunciation: '잇츠 패스트' },
+                    { english: 'It\'s slow.', korean: '느려요.', pronunciation: '잇츠 슬로' },
+                    { english: 'It\'s funny.', korean: '웃겨요.', pronunciation: '잇츠 퍼니' }
+                ],
+                // 8. 동물과의 상호작용 (4개) - 행동 패턴
+                interactions: [
+                    { english: 'I like bears.', korean: '나는 곰을 좋아해요.', pronunciation: '아이 라이크 베어즈' },
+                    { english: 'I don\'t like tigers.', korean: '나는 호랑이를 안 좋아해요.', pronunciation: '아이 돈트 라이크 타이거즈' },
+                    { english: 'Come here!', korean: '이리 와!', pronunciation: '컴 히어!' },
+                    { english: 'Be careful!', korean: '조심해!', pronunciation: '비 케어풀!' }
+                ]
+            }
+        };
+
+        // 날짜별 랜덤 학습 콘텐츠 생성 (패턴 기반)
+        function generateDailyContent(date) {
+            // 현재 단원 확인
+            const unit7Start = new Date(2025, 7, 25);   // 8월 25일
+            const unit7End = new Date(2025, 8, 13);     // 9월 13일
+            const unit8Start = new Date(2025, 8, 15);   // 9월 15일
+            const unit8End = new Date(2025, 9, 18);     // 10월 18일
+            const unit9Start = new Date(2025, 9, 20);   // 10월 20일
+            const unit9End = new Date(2025, 10, 15);    // 11월 15일
+            const unit10Start = new Date(2025, 10, 17); // 11월 17일
+            const unit10End = new Date(2025, 11, 6);    // 12월 6일
+            const unit11Start = new Date(2025, 11, 8);  // 12월 8일
+            const unit11End = new Date(2026, 0, 8);     // 1월 8일
+            
+            let currentUnitData;
+            if (date >= unit7Start && date <= unit7End) {
+                currentUnitData = unit7Data;
+            } else if (date >= unit8Start && date <= unit8End) {
+                currentUnitData = unit8Data;
+            } else if (date >= unit9Start && date <= unit9End) {
+                currentUnitData = unit9Data;
+            } else if (date >= unit10Start && date <= unit10End) {
+                currentUnitData = unit10Data;
+            } else if (date >= unit11Start && date <= unit11End) {
+                currentUnitData = unit11Data;
+            } else {
+                // 기본적으로 7단원 데이터 사용 (개발/테스트용)
+                currentUnitData = unit7Data;
+            }
+            
+            const seed = date.getDate() + date.getMonth() * 31 + date.getFullYear() * 365;
+            
+            // 시드 기반 랜덤 함수
+            function seededRandom(seed) {
+                let x = Math.sin(seed) * 10000;
+                return x - Math.floor(x);
+            }
+            
+            // 1. 단어 선택: 필수 단어 중 2개 + 추가 단어 중 3개
+            const coreShuffled = [...currentUnitData.coreVocabulary];
+            
+            // 필수 단어 셔플
+            for (let i = coreShuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(seededRandom(seed + i + 500) * (i + 1));
+                [coreShuffled[i], coreShuffled[j]] = [coreShuffled[j], coreShuffled[i]];
+            }
+            const selectedCoreWords = coreShuffled.slice(0, 2); // 필수 단어 중 2개 선택
+            
+            // 추가 단어 셔플 및 선택
+            const extendedShuffled = [...currentUnitData.extendedVocabulary];
+            for (let i = extendedShuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(seededRandom(seed + i) * (i + 1));
+                [extendedShuffled[i], extendedShuffled[j]] = [extendedShuffled[j], extendedShuffled[i]];
+            }
+            const randomWords = extendedShuffled.slice(0, 3); // 추가 단어 중 3개 선택
+            
+            // 2. 문장 패턴 조합 선택 (자연스러운 패턴 학습을 위해)
+            const sentencePatterns = currentUnitData.sentencePatterns;
+            const allPatternNames = Object.keys(sentencePatterns);
+            
+            // 패턴 조합 동적 생성 (단원별로 다른 패턴을 가질 수 있음)
+            const patternCombinations = [];
+            
+            // 각 단원의 주요 패턴들을 조합으로 만들기
+            if (allPatternNames.length >= 3) {
+                for (let i = 0; i < Math.min(5, allPatternNames.length - 2); i++) {
+                    const combo = [];
+                    for (let j = 0; j < 3; j++) {
+                        const patternIndex = (i + j) % allPatternNames.length;
+                        combo.push(allPatternNames[patternIndex]);
+                    }
+                    patternCombinations.push({
+                        name: `pattern-combo-${i}`,
+                        patterns: combo
+                    });
+                }
+            }
+            
+            // 패턴 조합이 없으면 기본 조합 생성
+            if (patternCombinations.length === 0) {
+                patternCombinations.push({
+                    name: 'default',
+                    patterns: allPatternNames.slice(0, 3)
+                });
+            }
+            
+            // 날짜에 따라 패턴 조합 선택
+            const combinationIndex = Math.floor(seededRandom(seed + 1000) * patternCombinations.length);
+            const selectedCombination = patternCombinations[combinationIndex];
+            
+            // 선택된 패턴에서 문장 추출
+            const dailySentences = [];
+            
+            selectedCombination.patterns.forEach((patternName, index) => {
+                const patternSentences = sentencePatterns[patternName];
+                if (patternSentences && patternSentences.length > 0) {
+                    const sentenceIndex = Math.floor(seededRandom(seed + 2000 + index) * patternSentences.length);
+                    dailySentences.push(patternSentences[sentenceIndex]);
+                }
+            });
+            
+            // 3개 문장이 안 되면 다른 패턴에서 보충
+            while (dailySentences.length < 3) {
+                const randomPatternName = allPatternNames[Math.floor(seededRandom(seed + 3000 + dailySentences.length) * allPatternNames.length)];
+                const patternSentences = sentencePatterns[randomPatternName];
+                if (patternSentences && patternSentences.length > 0) {
+                    const sentenceIndex = Math.floor(seededRandom(seed + 4000 + dailySentences.length) * patternSentences.length);
+                    
+                    // 중복 방지
+                    const newSentence = patternSentences[sentenceIndex];
+                    if (!dailySentences.some(s => s.english === newSentence.english)) {
+                        dailySentences.push(newSentence);
+                    }
+                }
+            }
+            
+            return {
+                vocabulary: [...selectedCoreWords, ...randomWords], // 필수 2개 + 추가 3개 = 이 5개
+                sentences: dailySentences.slice(0, 3), // 정확히 3개만
+                patternType: selectedCombination.name, // 디버깅용
+                unitData: currentUnitData === unit7Data ? 'unit7' : 
+                         currentUnitData === unit8Data ? 'unit8' : 
+                         currentUnitData === unit9Data ? 'unit9' :
+                         currentUnitData === unit10Data ? 'unit10' : 
+                         currentUnitData === unit11Data ? 'unit11' : 'default' // 디버깅용
+            };
+        }
+
+        // 현재 날짜의 학습 데이터 가져오기 (선택된 날짜 기반)
+        function getCurrentDailyData() {
+            try {
+                // 선택된 날짜가 있으면 그 날짜를, 없으면 오늘 날짜를 사용
+                const targetDate = selectedDate || new Date();
+                const data = generateDailyContent(targetDate);
+                
+                // 데이터 유효성 검사
+                if (!data || !data.vocabulary || !data.sentences) {
+                    console.log('데이터 생성 실패, 기본 데이터 사용');
+                    return {
+                        vocabulary: unit7Data.coreVocabulary.slice(0, 2).concat(unit7Data.extendedVocabulary.slice(0, 3)),
+                        sentences: unit7Data.sentencePatterns.questions.slice(0, 3)
+                    };
+                }
+                
+                console.log('생성된 일일 데이터 (날짜: ' + targetDate.toDateString() + '):', data);
+                return data;
+            } catch (error) {
+                console.error('일일 데이터 생성 오류:', error);
+                // 오류 발생 시 기본 데이터 반환
+                return {
+                    vocabulary: unit7Data.coreVocabulary.slice(0, 2).concat(unit7Data.extendedVocabulary.slice(0, 3)),
+                    sentences: unit7Data.sentencePatterns.questions.slice(0, 3)
+                };
+            }
+        }
+
+        // 공휴일 데이터 (2025-2026년) - 완전한 목록
+        const holidays2025 = {
+            // 2025년 공휴일
+            '0-1': '신정',                    // 1월 1일
+            '0-28': '설날 연휴',              // 1월 28일 (설날 전날)
+            '0-29': '설날',                   // 1월 29일 (설날 당일)
+            '0-30': '설날 연휴',              // 1월 30일 (설날 다음날)
+            '2-1': '삼일절',                  // 3월 1일
+            '4-5': '어린이날',                // 5월 5일
+            '5-6': '현충일',                  // 6월 6일
+            '7-15': '광복절',                 // 8월 15일
+            '9-3': '개천절',                  // 10월 3일
+            '9-5': '추석 연휴',               // 10월 5일 (추석 전날)
+            '9-6': '추석',                    // 10월 6일 (추석 당일)
+            '9-7': '추석 연휴',               // 10월 7일 (추석 다음날)
+            '9-8': '추석대체휴일',           // 10월 8일 (추석대체휴일)
+            '9-9': '한글날',                  // 10월 9일
+            '9-10': '학교장 재량 휴업일',     // 10월 10일 (추가 요청사항)
+            '11-25': '성탄절',                // 12월 25일
+            
+            // 2026년 1월
+            '0-1': '신정'                     // 2026년 1월 1일
+        };
+
+        // 시간 업데이트 함수
+        function updateTime() {
+            try {
+                const now = new Date();
+                const dateElement = document.getElementById('current-date-text');
+                const timeElement = document.getElementById('current-time');
+                
+                if (dateElement) {
+                    const year = now.getFullYear();
+                    const month = now.getMonth() + 1;
+                    const date = now.getDate();
+                    const day = weekdayNames[now.getDay()];
+                    dateElement.textContent = `${year}년 ${month}월 ${date}일 ${day}`;
+                }
+                
+                if (timeElement) {
+                    let hours = now.getHours();
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    const seconds = String(now.getSeconds()).padStart(2, '0');
+                    const ampm = hours >= 12 ? '오후' : '오전';
+                    hours = hours % 12;
+                    hours = hours ? hours : 12;
+                    timeElement.textContent = `${ampm} ${hours}시 ${minutes}분 ${seconds}초`;
+                }
+                
+                // 월/년 표시는 generateCalendar()에서만 업데이트하도록 제거
+            } catch (error) {
+                console.error('시간 업데이트 오류:', error);
+            }
+        }
+
+        // 달력 생성 함수
+        function generateCalendar() {
+            try {
+                const year = displayDate.getFullYear();
+                const month = displayDate.getMonth();
+                
+                // 월/년 표시 업데이트
+                const monthYearEl = document.getElementById('monthYear');
+                if (monthYearEl) {
+                    monthYearEl.textContent = `${year}년 ${monthNames[month]}`;
+                }
+                
+                const grid = document.getElementById('calendar-grid');
+                if (!grid) {
+                    console.error('달력 그리드를 찾을 수 없습니다');
+                    return;
+                }
+                
+                grid.innerHTML = '';
+                
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const startDate = new Date(firstDay);
+                startDate.setDate(startDate.getDate() - firstDay.getDay());
+                
+                for (let i = 0; i < 42; i++) {
+                    const currentDay = new Date(startDate);
+                    currentDay.setDate(startDate.getDate() + i);
+                    
+                    const dayDiv = document.createElement('div');
+                    dayDiv.className = 'calendar-day';
+                    
+                    // 요일별 클래스 추가
+                    if (currentDay.getDay() === 0) dayDiv.classList.add('sunday');
+                    if (currentDay.getDay() === 6) dayDiv.classList.add('saturday');
+                    
+                    // 다른 월의 날짜
+                    if (currentDay.getMonth() !== month) {
+                        dayDiv.classList.add('other-month');
+                    }
+                    
+                    // 오늘 날짜
+                    const today = new Date();
+                    if (currentDay.getFullYear() === today.getFullYear() &&
+                        currentDay.getMonth() === today.getMonth() &&
+                        currentDay.getDate() === today.getDate()) {
+                        dayDiv.classList.add('today');
+                    }
+                    
+                    // 공휴일 체크 및 이벤트 표시
+                    let eventsHTML = '';
+                    const holidayKey = `${currentDay.getMonth()}-${currentDay.getDate()}`;
+                    if (holidays2025[holidayKey]) {
+                        const holidayName = holidays2025[holidayKey];
+                        const eventClass = holidayName.includes('학교장') ? 'school-event' : 'holiday-event';
+                        eventsHTML += `<div class="event ${eventClass}">${holidayName}</div>`;
+                    }
+                    
+                    dayDiv.innerHTML = `
+                        <div class="day-number">${currentDay.getDate()}</div>
+                        <div class="events">${eventsHTML}</div>
+                    `;
+                    
+                    // 클릭 이벤트
+                    dayDiv.addEventListener('click', () => openStudyModal(new Date(currentDay)));
+                    grid.appendChild(dayDiv);
+                }
+                
+                console.log('달력 생성 완료:', year + '년 ' + monthNames[month]);
+            } catch (error) {
+                console.error('달력 생성 오류:', error);
+            }
+        }
+
+        // 영어 공부 모달 열기
+        function openStudyModal(date) {
+            const modal = document.getElementById('studyModal');
+            const title = document.getElementById('studyTitle');
+            
+            if (!modal || !title) return;
+            
+            // 선택된 날짜 저장 (날짜별로 다른 학습 내용을 위해)
+            selectedDate = new Date(date);
+            
+            // 주말 체크 (토요일: 6, 일요일: 0)
+            const dayOfWeek = date.getDay();
+            const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+            
+            // 공휴일 체크
+            const holidayKey = `${date.getMonth()}-${date.getDate()}`;
+            const isHoliday = holidays2025[holidayKey];
+            
+            // 각 단원별 학습 기간 체크
+            const unit7Start = new Date(2025, 7, 25);   // 8월 25일
+            const unit7End = new Date(2025, 8, 13);     // 9월 13일
+            const unit8Start = new Date(2025, 8, 15);   // 9월 15일  
+            const unit8End = new Date(2025, 9, 18);     // 10월 18일
+            const unit9Start = new Date(2025, 9, 20);   // 10월 20일
+            const unit9End = new Date(2025, 10, 15);    // 11월 15일
+            const unit10Start = new Date(2025, 10, 17); // 11월 17일
+            const unit10End = new Date(2025, 11, 6);    // 12월 6일
+            const unit11Start = new Date(2025, 11, 8);  // 12월 8일
+            const unit11End = new Date(2026, 0, 8);     // 1월 8일
+            
+            // 전체 학습 기간 체크 (8월 1일 ~ 1월 8일)
+            const totalPeriodStart = new Date(2025, 7, 1);   // 8월 1일
+            const totalPeriodEnd = new Date(2026, 0, 8);     // 1월 8일
+            const isInTotalPeriod = (date >= totalPeriodStart && date <= totalPeriodEnd);
+            
+            // 학습 종료 후 기간 체크 (1월 9일 이후)
+            const learningEndDate = new Date(2026, 0, 8);    // 1월 8일
+            const isAfterLearningPeriod = (date > learningEndDate);
+            
+            // 현재 활성 단원 확인
+            let currentUnit = null;
+            let isActiveStudyPeriod = false;
+            
+            if (date >= unit7Start && date <= unit7End) {
+                currentUnit = '7단원. I Have a Pencil';
+                isActiveStudyPeriod = true;
+            } else if (date >= unit8Start && date <= unit8End) {
+                currentUnit = '8단원. Can You Swim?';
+                isActiveStudyPeriod = true;
+            } else if (date >= unit9Start && date <= unit9End) {
+                currentUnit = '9단원. It\'s Big!';
+                isActiveStudyPeriod = true;
+            } else if (date >= unit10Start && date <= unit10End) {
+                currentUnit = '10단원. Who\'s He?';
+                isActiveStudyPeriod = true;
+            } else if (date >= unit11Start && date <= unit11End) {
+                currentUnit = '11단원. How\'s the Weather?';
+                isActiveStudyPeriod = true;
+            }
+            
+            // 단원명 설정
+            if (currentUnit) {
+                title.textContent = currentUnit;
+            } else if (isInTotalPeriod) {
+                title.textContent = '영어 학습 프로그램';
+            } else {
+                title.textContent = '영어 학습 프로토타입';
+            }
+            
+            if (isAfterLearningPeriod) {
+                // 1월 9일 이후 - 학습 기간 종료
+                showNoStudyContent();
+            } else if (isWeekend || isHoliday) {
+                // 주말이나 공휴일인 경우
+                if (isInTotalPeriod) {
+                    showNoStudyContent(isHoliday ? holidays2025[holidayKey] : null);
+                } else {
+                    showNoClassContent();
+                }
+            } else if (isActiveStudyPeriod) {
+                // 평일이고 활성 학습 기간인 경우
+                currentStudyType = 'vocabulary';
+                currentStudyIndex = 0;
+                showStudyContent();
+            } else if (isInTotalPeriod) {
+                // 학습 기간 내이지만 활성 단원이 아닌 경우
+                showNoStudyContent();
+            } else {
+                // 전체 학습 기간이 아닌 경우
+                showNoClassContent();
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        // 주말/공휴일 학습 없음 표시
+        function showNoStudyContent(holidayName = null) {
+            const container = document.getElementById('wordContainer');
+            if (!container) return;
+            
+            const message = holidayName ? `${holidayName} - 오늘은 쉬는 날입니다` : '오늘 학습할 내용이 없습니다';
+            const icon = holidayName ? '🎉' : '📅';
+            
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px;">
+                    <div style="font-size: 4rem; margin-bottom: 20px;">${icon}</div>
+                    <div style="font-size: 1.8rem; color: #666; font-weight: 600; margin-bottom: 15px;">
+                        ${message}
+                    </div>
+                    <button onclick="closeStudyModal()" style="
+                        margin-top: 30px;
+                        padding: 12px 24px;
+                        background: #4ECDC4;
+                        color: white;
+                        border: none;
+                        border-radius: 25px;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+                        transition: all 0.3s ease;
+                    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        닫기
+                    </button>
+                </div>
+            `;
+        }
+
+        // 수업이 없는 날 표시
+        function showNoClassContent() {
+            const container = document.getElementById('wordContainer');
+            if (!container) return;
+            
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px;">
+                    <div style="font-size: 4rem; margin-bottom: 20px;">📚</div>
+                    <div style="font-size: 1.5rem; color: #666; margin-bottom: 15px;">
+                        영어 학습 프로토타입
+                    </div>
+                    <div style="font-size: 1rem; color: #999;">
+                        학습 기간: 8월 25일 ~ 2026년 1월 10일
+                    </div>
+                    <button onclick="closeStudyModal()" style="
+                        margin-top: 30px;
+                        padding: 12px 24px;
+                        background: #4ECDC4;
+                        color: white;
+                        border: none;
+                        border-radius: 25px;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+                        transition: all 0.3s ease;
+                    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        닫기
+                    </button>
+                </div>
+            `;
+        }
+
+        // 학습 내용 표시
+        function showStudyContent() {
+            const container = document.getElementById('wordContainer');
+            if (!container) return;
+            
+            try {
+                // 현재 날짜의 학습 데이터 가져오기
+                const dailyData = getCurrentDailyData();
+                if (!dailyData || !dailyData.vocabulary || !dailyData.sentences) {
+                    console.error('학습 데이터가 없습니다');
+                    return;
+                }
+                
+                const data = currentStudyType === 'vocabulary' ? 
+                    dailyData.vocabulary : dailyData.sentences;
+                
+                if (!data || data.length === 0) {
+                    console.error('현재 학습 타입의 데이터가 없습니다');
+                    return;
+                }
+                
+                if (currentStudyIndex >= data.length) {
+                    if (currentStudyType === 'vocabulary') {
+                        currentStudyType = 'sentences';
+                        currentStudyIndex = 0;
+                        showStudyContent();
+                        return;
+                    } else {
+                        showCompletionMessage();
+                        return;
+                    }
+                }
+                
+                const item = data[currentStudyIndex];
+                if (!item) {
+                    console.error('학습 항목이 없습니다');
+                    return;
+                }
+                
+                if (currentStudyType === 'sentences') {
+                    container.innerHTML = `
+                        <div class="word-visual" style="height: 80px;"></div>
+                        <div class="word-english" style="font-size: 2rem; margin-bottom: 25px;">${item.english || ''}</div>
+                        <div class="word-korean" style="margin-bottom: 25px;">${item.korean || ''}</div>
+                        <div class="pronunciation-guide" style="margin-bottom: 35px;">[${item.pronunciation || ''}]</div>
+                        <div style="display:flex; align-items:center; justify-content:center; margin-top: 30px;">
+                            <button class="audio-button" onclick="playAudio('${(item.english || '').replace(/'/g, '\\\'')}')" title="듣기">🔊</button>
+                        </div>
+                        <div class="feedback-area" id="feedback"></div>
+                        <div class="navigation-buttons">
+                            <button class="nav-study-btn" id="prevBtn" onclick="goToPrevious()" title="이전">‹ 이전</button>
+                            <button class="nav-study-btn" id="nextBtn" onclick="goToNext()" title="다음">다음 ›</button>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div class="word-visual">
+                            <div style="font-size: 6rem; transform: rotate(-5deg);">${item.image || '📚'}</div>
+                        </div>
+                        <div class="word-english">${item.english || ''}</div>
+                        <div class="word-korean">${item.korean || ''}</div>
+                        <div class="pronunciation-guide">[${item.pronunciation || ''}]</div>
+                        <div style="display: flex; align-items: center; justify-content: center; margin-top: 20px;">
+                            <button class="audio-button" onclick="playAudio('${(item.english || '').replace(/'/g, '\\\'')}')" title="듣기">🔊</button>
+                        </div>
+                        <div class="feedback-area" id="feedback"></div>
+                        <div class="navigation-buttons">
+                            <button class="nav-study-btn" id="prevBtn" onclick="goToPrevious()" title="이전">‹ 이전</button>
+                            <button class="nav-study-btn" id="nextBtn" onclick="goToNext()" title="다음">다음 ›</button>
+                        </div>
+                    `;
+                }
+                
+                // 네비게이션 버튼 상태 업데이트
+                updateNavigationButtons();
+                
+            } catch (error) {
+                console.error('학습 내용 표시 오류:', error);
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px;">
+                        <div style="font-size: 2rem; color: #ff6b6b;">오류가 발생했습니다</div>
+                        <div style="font-size: 1rem; color: #999; margin-top: 10px;">페이지를 새로고침해 주세요</div>
+                    </div>
+                `;
+            }
+        }
+
+        // 학습 완료 메시지
+        function showCompletionMessage() {
+            const container = document.getElementById('wordContainer');
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px 20px;">
+                    <div style="font-size: 4rem; margin-bottom: 20px;">🎉</div>
+                    <div style="font-size: 2rem; color: #333; font-weight: bold; margin-bottom: 15px;">축하합니다!</div>
+                    <div style="font-size: 1.3rem; color: #666;">오늘의 학습을 모두 완료했습니다!</div>
+                </div>
+            `;
+            
+            // 3초 후 모달 자동 닫기
+            setTimeout(() => {
+                closeStudyModal();
+            }, 3000);
+        }
+
+        // 음성 재생
+        function playAudio(text) {
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.7;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        // 이전으로 이동
+        function goToPrevious() {
+            if (currentStudyIndex > 0) {
+                currentStudyIndex--;
+                showStudyContent();
+            } else if (currentStudyType === 'sentences') {
+                currentStudyType = 'vocabulary';
+                const dailyData = getCurrentDailyData();
+                currentStudyIndex = dailyData.vocabulary.length - 1;
+                showStudyContent();
+            }
+        }
+
+        // 다음으로 이동
+        function goToNext() {
+            const dailyData = getCurrentDailyData();
+            const data = currentStudyType === 'vocabulary' ? 
+                dailyData.vocabulary : dailyData.sentences;
+                
+            if (currentStudyIndex < data.length - 1) {
+                currentStudyIndex++;
+                showStudyContent();
+            } else if (currentStudyType === 'vocabulary') {
+                currentStudyType = 'sentences';
+                currentStudyIndex = 0;
+                showStudyContent();
+            } else {
+                // 마지막 문장 완료 시
+                showCompletionMessage();
+            }
+        }
+
+        // 네비게이션 버튼 상태 업데이트
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (!prevBtn || !nextBtn) return;
+            
+            const dailyData = getCurrentDailyData();
+            const isFirstVocab = currentStudyType === 'vocabulary' && currentStudyIndex === 0;
+            prevBtn.disabled = isFirstVocab;
+            
+            const data = currentStudyType === 'vocabulary' ? 
+                dailyData.vocabulary : dailyData.sentences;
+            const isLastSentence = currentStudyType === 'sentences' && currentStudyIndex === data.length - 1;
+            
+            // 마지막 문장일 때는 "완료" 버튼으로 변경
+            if (isLastSentence) {
+                nextBtn.innerHTML = '완료 ✓';
+                nextBtn.disabled = false;
+            } else {
+                nextBtn.innerHTML = '다음 ›';
+                nextBtn.disabled = false;
+            }
+        }
+
+        // 영어 공부 모달 닫기
+        function closeStudyModal() {
+            const modal = document.getElementById('studyModal');
+            modal.style.display = 'none';
+        }
+
+        // 달력 스와이프 기능을 위한 변수
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        // 오늘로 이동
+        function goToToday() {
+            const today = new Date();
+            const minDate = new Date(2025, 6, 1); // 2025년 7월
+            const maxDate = new Date(2026, 0, 31); // 2026년 1월
+            
+            // 오늘이 유효한 범위 내에 있을 경우에만 이동
+            if (today >= minDate && today <= maxDate) {
+                displayDate = new Date(today.getFullYear(), today.getMonth(), 1);
+            } else if (today < minDate) {
+                displayDate = new Date(2025, 6, 1); // 2025년 7월로 설정
+            } else {
+                displayDate = new Date(2026, 0, 1); // 2026년 1월로 설정
+            }
+            generateCalendar();
+        }
+
+        // 이전 월로 이동
+        function goToPreviousMonth() {
+            // 2025년 7월보다 이전으로 갈 수 없도록 제한
+            const minDate = new Date(2025, 6, 1); // 2025년 7월
+            const prevMonth = new Date(displayDate.getFullYear(), displayDate.getMonth() - 1, 1);
+            
+            if (prevMonth >= minDate) {
+                displayDate.setMonth(displayDate.getMonth() - 1);
+                generateCalendar();
+            }
+        }
+
+        // 다음 월로 이동
+        function goToNextMonth() {
+            // 2026년 1월보다 이후로 갈 수 없도록 제한
+            const maxDate = new Date(2026, 0, 1); // 2026년 1월
+            const nextMonth = new Date(displayDate.getFullYear(), displayDate.getMonth() + 1, 1);
+            
+            if (nextMonth <= maxDate) {
+                displayDate.setMonth(displayDate.getMonth() + 1);
+                generateCalendar();
+            }
+        }
+
+        // 터치 이벤트 처리
+        function handleTouchStart(e) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }
+
+        function handleTouchEnd(e) {
+            if (!touchStartX || !touchStartY) return;
+
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            
+            const deltaX = touchStartX - touchEndX;
+            const deltaY = touchStartY - touchEndY;
+
+            // 가로 스와이프가 세로 스와이프보다 클 때만 처리
+            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+                if (deltaX > 0) {
+                    // 왼쪽으로 스와이프 - 다음 월
+                    goToNextMonth();
+                } else {
+                    // 오른쪽으로 스와이프 - 이전 월
+                    goToPreviousMonth();
+                }
+            }
+
+            touchStartX = 0;
+            touchStartY = 0;
+        }
+
+        // 초기화 함수
+        function initializeCalendar() {
+            try {
+                console.log('달력 초기화 시작...');
+                
+                // 전역 변수 초기화
+                if (typeof completedDates === 'undefined') {
+                    completedDates = {};
+                }
+                
+                // 현재 날짜만 설정, displayDate는 별도 관리
+                currentDate = new Date();
+                
+                // displayDate를 유효한 범위 내로 초기화
+                const minDate = new Date(2025, 6, 1); // 2025년 7월
+                const maxDate = new Date(2026, 0, 31); // 2026년 1월
+                
+                if (!displayDate || displayDate.getFullYear() < 2025) {
+                    if (currentDate >= minDate && currentDate <= maxDate) {
+                        // 현재 날짜가 유효 범위 내면 현재 월로 설정
+                        displayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+                    } else {
+                        // 현재 날짜가 범위 밖이면 2025년 9월로 기본 설정 (첫 번째 학습 단원 시작)
+                        displayDate = new Date(2025, 8, 1);
+                    }
+                }
+                
+                console.log('현재 날짜:', currentDate);
+                console.log('표시할 달:', displayDate);
+                
+                // 시간 업데이트 시작 (월/년 표시는 제외)
+                updateTime();
+                setInterval(updateTime, 1000);
+                
+                // 달력 즉시 생성
+                setTimeout(() => {
+                    generateCalendar();
+                }, 100);
+                
+                // 터치 이벤트 등록 (달력 컨테이너에)
+                const calendarContainer = document.querySelector('.calendar-container');
+                if (calendarContainer) {
+                    calendarContainer.addEventListener('touchstart', handleTouchStart, {passive: true});
+                    calendarContainer.addEventListener('touchend', handleTouchEnd, {passive: true});
+                } else {
+                    console.log('달력 컨테이너를 찾을 수 없습니다');
+                }
+                
+                console.log('달력 초기화 완료');
+            } catch (error) {
+                console.error('초기화 오류:', error);
+            }
+        }
+
+        // 모든 초기화 방법 시도
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeCalendar);
+        } else {
+            initializeCalendar();
+        }
+        
+        window.addEventListener('load', initializeCalendar);
+        setTimeout(initializeCalendar, 100);
+    </script>
+</body>
+</html>
+                
