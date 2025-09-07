@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>오늘의영어공부</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<title>오늘의영어공부</title>
+<style>
         * {
             margin: 0;
             padding: 0;
@@ -794,72 +795,154 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
     </style>
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#4ecdc4">
-<link rel="icon" href="icons/icon-192.png" sizes="192x192">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-</head>
-<body>
-    <div class="calendar-container">
-        <div class="header">
-            <div class="storage-status">오늘영어</div>
-            <div style="position: absolute; top: 60px; left: 50%; transform: translateX(-50%); z-index: 3;">
-                <h1 id="monthYear" style="margin: 0; font-size: 2.2rem; font-weight: 700; text-shadow: 3px 3px 6px rgba(0,0,0,0.3);">로딩중...</h1>
-            </div>
-            <div class="current-date" style="margin-top: 100px;">오늘: <span id="current-date-text">로딩중...</span></div>
-            <div class="current-time" style="font-size: 1rem; margin-top: 8px; font-weight: 500; color: white;">
-                현재 시간: <span id="current-time">로딩중...</span>
-            </div>
-            <div class="nav-buttons" style="display: flex; gap: 8px;">
-                <button onclick="goToPreviousMonth()" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4); border: 2px solid rgba(255, 255, 255, 0.8); color: white; padding: 8px 12px; border-radius: 25px; cursor: pointer; font-weight: 600; font-size: 1.2rem; box-shadow: 0 3px 10px rgba(0,0,0,0.2); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.4)'" onmouseout="this.style.background='linear-gradient(45deg, #FF6B6B, #4ECDC4)'">‹</button>
-                <button class="nav-btn" onclick="goToToday()">오늘</button>
-                <button onclick="goToNextMonth()" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4); border: 2px solid rgba(255, 255, 255, 0.8); color: white; padding: 8px 12px; border-radius: 25px; cursor: pointer; font-weight: 600; font-size: 1.2rem; box-shadow: 0 3px 10px rgba(0,0,0,0.2); transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.4)'" onmouseout="this.style.background='linear-gradient(45deg, #FF6B6B, #4ECDC4)'">›</button>
-            </div>
-        </div>
-        
-        <div class="weekdays">
-            <div class="weekday sunday">일</div>
-            <div class="weekday">월</div>
-            <div class="weekday">화</div>
-            <div class="weekday">수</div>
-            <div class="weekday">목</div>
-            <div class="weekday">금</div>
-            <div class="weekday saturday">토</div>
-        </div>
-        
-        <div class="calendar-grid" id="calendar-grid">
-            <!-- 달력이 여기에 동적으로 생성됩니다 -->
-        </div>
-    </div>
+<style>
+/* === Fullscreen calendar on mobile (injected by ChatGPT) === */
+@supports (height: 100svh) {
+  @media (max-width: 768px) {
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+    body {
+      padding: 0 !important;
+      margin: 0 !important;
+      background: #f5f5f7;
+    }
+    .calendar-container {
+      width: 100vw !important;
+      height: 100svh !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      border-radius: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
 
-    <!-- 영어 공부 모달 -->
-    <div id="studyModal" class="study-modal">
-        <div class="study-modal-content">
-            <div class="notebook-holes">
-                <div class="notebook-hole"></div>
-                <div class="notebook-hole"></div>
-                <div class="notebook-hole"></div>
-                <div class="notebook-hole"></div>
-                <div class="notebook-hole"></div>
-                <div class="notebook-hole"></div>
-                <div class="notebook-hole"></div>
-                <div class="notebook-hole"></div>
-                <div class="notebook-hole"></div>
-            </div>
-            
-            <button class="close-study" onclick="closeStudyModal()">&times;</button>
-            
-            <div class="study-header">
-                <h2 id="studyTitle">7단원. I Have a Pencil</h2>
-            </div>
-            
-            <div class="study-content-area" id="wordContainer">
-                <!-- 학습 내용이 여기에 동적으로 삽입됩니다 -->
-            </div>
-        </div>
-    </div>
-    
-    <script>
+    .header {
+      min-height: unset;
+      padding: 14px 10px;
+      height: clamp(90px, 22svh, 150px);
+    }
+
+    .weekdays {
+      flex: 0 0 36px;
+    }
+    .weekday {
+      padding: 6px 2px;
+      font-size: 0.8rem;
+    }
+
+    .calendar-grid {
+      flex: 1 1 auto;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-template-rows: repeat(6, 1fr);
+      min-height: 0;
+    }
+
+    .calendar-day {
+      min-height: 0 !important;
+      padding: 6px 3px;
+      border-right: 1px solid #e9ecef;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .current-date { margin-top: 72px; font-size: 0.9rem; }
+    .current-time { font-size: 0.8rem; }
+  }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .calendar-container { height: 100svh !important; }
+  .header { height: clamp(70px, 18svh, 110px); }
+  .weekdays { flex: 0 0 30px; }
+  .calendar-grid { grid-template-rows: repeat(6, 1fr); }
+}
+</style><style>
+/* === Completion stamp badge === */
+.calendar-day {
+  position: relative; /* for stamp positioning */
+}
+.day-stamp {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  z-index: 3;
+  padding: 2px 6px;
+  font-size: 0.70rem;
+  line-height: 1.2;
+  border: 2px solid rgba(220, 0, 0, 0.6);
+  border-radius: 9999px;
+  background: rgba(255, 240, 240, 0.95);
+  transform: rotate(-8deg);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  user-select: none;
+  pointer-events: none;
+  font-weight: 700;
+}
+@media (max-width: 390px) {
+  .day-stamp {
+    font-size: 0.62rem;
+    right: 4px;
+    bottom: 4px;
+  }
+}
+</style></head>
+<body>
+<div class="calendar-container">
+<div class="header">
+<div class="storage-status">오늘영어</div>
+<div style="position: absolute; top: 60px; left: 50%; transform: translateX(-50%); z-index: 3;">
+<h1 id="monthYear" style="margin: 0; font-size: 2.2rem; font-weight: 700; text-shadow: 3px 3px 6px rgba(0,0,0,0.3);">로딩중...</h1>
+</div>
+<div class="current-date" style="margin-top: 100px;">오늘: <span id="current-date-text">로딩중...</span></div>
+<div class="current-time" style="font-size: 1rem; margin-top: 8px; font-weight: 500; color: white;">
+                현재 시간: <span id="current-time">로딩중...</span>
+</div>
+<div class="nav-buttons" style="display: flex; gap: 8px;">
+<button onclick="goToPreviousMonth()" onmouseout="this.style.background='linear-gradient(45deg, #FF6B6B, #4ECDC4)'" onmouseover="this.style.background='rgba(255,255,255,0.4)'" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4); border: 2px solid rgba(255, 255, 255, 0.8); color: white; padding: 8px 12px; border-radius: 25px; cursor: pointer; font-weight: 600; font-size: 1.2rem; box-shadow: 0 3px 10px rgba(0,0,0,0.2); transition: all 0.3s ease;">‹</button>
+<button class="nav-btn" onclick="goToToday()">오늘</button>
+<button onclick="goToNextMonth()" onmouseout="this.style.background='linear-gradient(45deg, #FF6B6B, #4ECDC4)'" onmouseover="this.style.background='rgba(255,255,255,0.4)'" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4); border: 2px solid rgba(255, 255, 255, 0.8); color: white; padding: 8px 12px; border-radius: 25px; cursor: pointer; font-weight: 600; font-size: 1.2rem; box-shadow: 0 3px 10px rgba(0,0,0,0.2); transition: all 0.3s ease;">›</button>
+</div>
+</div>
+<div class="weekdays">
+<div class="weekday sunday">일</div>
+<div class="weekday">월</div>
+<div class="weekday">화</div>
+<div class="weekday">수</div>
+<div class="weekday">목</div>
+<div class="weekday">금</div>
+<div class="weekday saturday">토</div>
+</div>
+<div class="calendar-grid" id="calendar-grid">
+<!-- 달력이 여기에 동적으로 생성됩니다 -->
+</div>
+</div>
+<!-- 영어 공부 모달 -->
+<div class="study-modal" id="studyModal">
+<div class="study-modal-content">
+<div class="notebook-holes">
+<div class="notebook-hole"></div>
+<div class="notebook-hole"></div>
+<div class="notebook-hole"></div>
+<div class="notebook-hole"></div>
+<div class="notebook-hole"></div>
+<div class="notebook-hole"></div>
+<div class="notebook-hole"></div>
+<div class="notebook-hole"></div>
+<div class="notebook-hole"></div>
+</div>
+<button class="close-study" onclick="closeStudyModal()">×</button>
+<div class="study-header">
+<h2 id="studyTitle">7단원. I Have a Pencil</h2>
+</div>
+<div class="study-content-area" id="wordContainer">
+<!-- 학습 내용이 여기에 동적으로 삽입됩니다 -->
+</div>
+</div>
+</div>
+<script>
         // 전역 변수
         let currentDate = new Date();
         let displayDate = new Date();
@@ -1692,7 +1775,18 @@
         }
 
         // 영어 공부 모달 열기
-        function openStudyModal(date) {
+        
+function openStudyModal(date) {
+            try {
+                // Keep context date in sync for stamping
+                if (date instanceof Date) {
+                    const y = date.getFullYear();
+                    const m = String(date.getMonth()+1).padStart(2,'0');
+                    const dd = String(date.getDate()).padStart(2,'0');
+                    window.__currentLessonDate = `${y}-${m}-${dd}`;
+                }
+            } catch(e){}
+
             const modal = document.getElementById('studyModal');
             const title = document.getElementById('studyTitle');
             
@@ -1940,7 +2034,27 @@
         }
 
         // 학습 완료 메시지
-        function showCompletionMessage() {
+        
+function showCompletionMessage() {
+            try {
+                // Auto-stamp for the selected/context date
+                var dstr = null;
+                if (window.__currentLessonDate && typeof window.__currentLessonDate === "string") {
+                    dstr = window.__currentLessonDate;
+                } else if (typeof selectedDate !== "undefined" && selectedDate instanceof Date) {
+                    const y = selectedDate.getFullYear();
+                    const m = String(selectedDate.getMonth()+1).padStart(2,'0');
+                    const dd = String(selectedDate.getDate()).padStart(2,'0');
+                    dstr = `${y}-${m}-${dd}`;
+                }
+                if (!dstr) {
+                    // fall back to today; helper exists if stamp script loaded
+                    if (window.markLessonComplete) window.markLessonComplete();
+                } else {
+                    if (window.markLessonComplete) window.markLessonComplete(dstr);
+                }
+            } catch(e){ console.warn("Auto-stamp failed", e); }
+
             const container = document.getElementById('wordContainer');
             container.innerHTML = `
                 <div style="text-align: center; padding: 40px 20px;">
@@ -2169,13 +2283,393 @@
         window.addEventListener('load', initializeCalendar);
         setTimeout(initializeCalendar, 100);
     </script>
+<!-- 공유 오디오 엘리먼트 (없으면 스크립트가 자동 생성) -->
+<audio crossorigin="anonymous" id="player" preload="none"></audio>
+<!-- Drop-in Patch: Cloudflare Workers TTS -->
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js');
-  });
+  const TTS_ENDPOINT = 'https://misty-glade-ea03.ksm7789.workers.dev';
+
+  (function ensureAudio(){
+    let el = document.getElementById('player');
+    if (!el) {
+      el = document.createElement('audio');
+      el.id = 'player';
+      el.setAttribute('preload','none');
+      el.setAttribute('crossorigin','anonymous');
+      document.body.appendChild(el);
+    }
+  })();
+
+  function tryWebSpeech(text) {
+    if (!('speechSynthesis' in window)) return false;
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      u.rate = 0.9;
+      speechSynthesis.speak(u);
+      return true;
+    } catch { return false; }
+  }
+
+  async function playViaWorkers(text) {
+    if (!text || !text.trim()) throw new Error('empty text');
+    const url = `${TTS_ENDPOINT}/?text=${encodeURIComponent(text)}&lang=en-us`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('TTS 요청 실패');
+    const blob = await res.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.getElementById('player');
+    a.src = objectUrl;
+    a.load();
+    await a.play();
+    a.onended = () => URL.revokeObjectURL(objectUrl);
+  }
+
+  window.playAudio = async function(text){
+    const used = tryWebSpeech(text);
+    if (used) return;
+    try {
+      await playViaWorkers(text);
+    } catch (e) {
+      console.error(e);
+      alert('음성 재생 실패: 네트워크 또는 TTS 설정을 확인하세요.');
+    }
+  };
+
+  // data-tts 속성 자동 바인딩
+  (function autoBind(){
+    const selector = '[data-tts]';
+    function attach(el){
+      if (el.__ttsBound) return;
+      el.addEventListener('click', ()=>{
+        const t = el.getAttribute('data-tts');
+        if (t) window.playAudio(t);
+      });
+      el.__ttsBound = true;
+    }
+    document.querySelectorAll(selector).forEach(attach);
+    const obs = new MutationObserver((muts)=>{
+      muts.forEach((m)=>{
+        m.addedNodes.forEach((n)=>{
+          if (n.nodeType===1) {
+            if (n.matches && n.matches(selector)) attach(n);
+            n.querySelectorAll && n.querySelectorAll(selector).forEach(attach);
+          }
+        });
+      });
+    });
+    obs.observe(document.documentElement,{childList:true,subtree:true});
+  })();
+  </script>
+<script>
+/* === Completion stamp logic (enhanced) === */
+(function(){
+  const STORAGE_KEY = "lessonCompletions"; // maps dateString (YYYY-MM-DD) -> true
+
+  function loadCompletions(){
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch(e){
+      console.warn("Failed to parse completions", e);
+      return {};
+    }
+  }
+
+  function saveCompletions(map){
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
+    } catch(e){
+      console.warn("Failed to save completions", e);
+    }
+  }
+
+  function toDateString(d){
+    if (!d) d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function getVisibleYearMonth(){
+    const header = document.querySelector(".header, .calendar-header") || document;
+    const text = header.textContent || "";
+    let y=null, m=null;
+    let m1 = text.match(/(\d{4})\s*년[^0-9]*([0-9]{1,2})\s*월/);
+    if (m1){ y = parseInt(m1[1],10); m = parseInt(m1[2],10); }
+    if (!y){
+      const months = ["january","february","march","april","may","june","july","august","september","october","november","december"];
+      const lower = text.toLowerCase();
+      for (let i=0;i<12;i++){
+        if (lower.includes(months[i])){
+          m = i+1;
+          let yMatch = lower.match(/(20\d{2}|\d{4})/);
+          if (yMatch) y = parseInt(yMatch[1],10);
+          break;
+        }
+      }
+    }
+    const now = new Date();
+    return {year: y || now.getFullYear(), month: m || (now.getMonth()+1)};
+  
+  // --- Context date detection ---
+  function getContextDate(){
+    // 1) Explicit global set when a day/lesson is opened
+    if (window.__currentLessonDate && typeof window.__currentLessonDate === "string"){
+      return window.__currentLessonDate;
+    }
+    // 2) Modal or container carries a date attribute
+    const modal = document.querySelector(".lesson-modal[data-date], [data-current-date]");
+    if (modal){
+      const d = modal.getAttribute("data-date") || modal.getAttribute("data-current-date");
+      if (d) return normalizeDateStr(d);
+    }
+    // 3) Hidden input
+    const inp = document.getElementById("lesson-date");
+    if (inp && inp.value) return normalizeDateStr(inp.value);
+    // 4) Selected/active calendar day
+    const sel = document.querySelector(".calendar-day.selected[data-date], .calendar-day.active[data-date]");
+    if (sel && sel.getAttribute("data-date")) return normalizeDateStr(sel.getAttribute("data-date"));
+    // 5) Try infer from visible month + selected cell's day number
+    const sel2 = document.querySelector(".calendar-day.selected, .calendar-day.active");
+    if (sel2){
+      const numEl = sel2.querySelector(".day-number, .date, .day, .dayNum, .day-num") || sel2;
+      const txt = (numEl.textContent||"").trim();
+      const m = txt.match(/^(\d{1,2})\b/);
+      if (m){
+        const dnum = m[1].padStart(2,"0");
+        const {year, month} = getVisibleYearMonth();
+        const m2 = String(month).padStart(2,"0");
+        return `${year}-${m2}-${dnum}`;
+      }
+    }
+    // 6) Fallback to today
+    return toDateString(new Date());
+  }
+
+  function normalizeDateStr(s){
+    const norm = String(s).trim().replace(/\//g,"-");
+    const m = norm.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    if (m){
+      const y = m[1], mm = String(parseInt(m[2],10)).padStart(2,'0'), dd = String(parseInt(m[3],10)).padStart(2,'0');
+      return `${y}-${mm}-${dd}`;
+    }
+    return toDateString(new Date());
+  }
+
+  // Keep context date in sync when a user clicks a day cell
+  document.addEventListener("click", (e)=>{
+    const dayCell = e.target.closest && e.target.closest(".calendar-day");
+    if (dayCell){
+      const d = dayCell.getAttribute("data-date") || dayCell.getAttribute("data-day");
+      if (d){
+        window.__currentLessonDate = normalizeDateStr(d);
+      }else{
+        // infer from visible month + cell day number
+        const numEl = dayCell.querySelector(".day-number, .date, .day, .dayNum, .day-num") || dayCell;
+        const txt = (numEl.textContent||"").trim();
+        const m = txt.match(/^(\d{1,2})\b/);
+        if (m){
+          const dnum = m[1].padStart(2,"0");
+          const {year, month} = getVisibleYearMonth();
+          const m2 = String(month).padStart(2,"0");
+          window.__currentLessonDate = `${year}-${m2}-${dnum}`;
+        }
+      }
+    }
+  }, true);
 }
+
+  function findDayCellByDateString(dateStr){
+    let el = document.querySelector(`.calendar-day[data-date="${dateStr}"], .calendar-day[data-day="${dateStr}"]`);
+    if (el) return el;
+    const dayNum = parseInt(dateStr.split("-")[2], 10);
+    const cells = document.querySelectorAll(".calendar-day");
+    for (const c of cells){
+      const numEl = c.querySelector(".day-number, .date, .day, .dayNum, .day-num") || c;
+      const txt = (numEl.textContent||"").trim();
+      const m2 = txt.match(/^(\d{1,2})\b/);
+      if (m2 && parseInt(m2[1],10) === dayNum) {
+        if (!c.classList.contains("other-month") && !c.classList.contains("prev-month") && !c.classList.contains("next-month")){
+          return c;
+        }
+      }
+    }
+    return null;
+  }
+
+  function renderStampInCell(cell){
+    if (!cell) return;
+    if (cell.querySelector(".day-stamp")) return;
+    const badge = document.createElement("div");
+    badge.className = "day-stamp";
+    badge.textContent = "참 잘했어요";
+    cell.appendChild(badge);
+  }
+
+  function renderCompletionStamps(){
+    const map = loadCompletions();
+    Object.keys(map).forEach(dateStr => {
+      const cell = findDayCellByDateString(dateStr);
+      if (cell) renderStampInCell(cell);
+    });
+  }
+
+  function markLessonComplete(dateLike){
+    let dateStr;
+    if (!dateLike){
+      dateStr = toDateString(new Date());
+    } else if (dateLike instanceof Date){
+      dateStr = toDateString(dateLike);
+    } else if (typeof dateLike === "string"){
+      const norm = dateLike.replace(/\//g,"-");
+      const m = norm.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+      if (m){
+        const y = m[1], mm = String(parseInt(m[2],10)).padStart(2,'0'), dd = String(parseInt(m[3],10)).padStart(2,'0');
+        dateStr = `${y}-${mm}-${dd}`;
+      } else {
+        dateStr = toDateString(new Date());
+      }
+    } else {
+      dateStr = toDateString(new Date());
+    }
+
+    const map = loadCompletions();
+    if (map[dateStr]) {
+      // already stamped: do nothing (no duplicate)
+      showToast("이미 스탬프가 찍혀 있어요");
+      return {dateStr, added:false};
+    }
+
+    map[dateStr] = true;
+    saveCompletions(map);
+
+    const cell = findDayCellByDateString(dateStr);
+    if (cell) renderStampInCell(cell);
+
+    showToast("스탬프가 찍혔어요!");
+    return {dateStr, added:true};
+  }
+
+  // --- UI helpers: toast & date modal ---
+  function showToast(msg){
+    const t = document.getElementById("stamp-toast");
+    if (!t) return;
+    t.textContent = msg;
+    t.style.display = "block";
+    clearTimeout(showToast._tid);
+    showToast._tid = setTimeout(()=>{ t.style.display = "none"; }, 1600);
+  }
+
+  function openStampDatePicker(){
+    const modal = document.getElementById("stamp-date-modal");
+    const input = document.getElementById("stamp-date-input");
+    if (!modal || !input) return;
+    // default to today
+    const todayStr = toDateString(new Date());
+    input.value = todayStr;
+    modal.style.display = "flex";
+  }
+
+  function closeStampDatePicker(){
+    const modal = document.getElementById("stamp-date-modal");
+    if (modal) modal.style.display = "none";
+  }
+
+  function wireDateModal(){
+    const ok = document.getElementById("stamp-date-ok");
+    const cancel = document.getElementById("stamp-date-cancel");
+    const overlay = document.getElementById("stamp-date-modal");
+    if (ok){
+      ok.addEventListener("click", ()=>{
+        const input = document.getElementById("stamp-date-input");
+        if (input && input.value){
+          // value is like YYYY-MM-DD
+          markLessonComplete(input.value);
+        }
+        closeStampDatePicker();
+      });
+    }
+    if (cancel){
+      cancel.addEventListener("click", closeStampDatePicker);
+    }
+    if (overlay){
+      overlay.addEventListener("click", (e)=>{
+        if (e.target === overlay) closeStampDatePicker();
+      });
+    }
+  }
+
+  function autoBindComplete(){
+    // today-complete button
+    const btn = document.querySelector("#complete-btn, [data-role='complete'], .complete-btn");
+    if (btn && !btn.dataset._stampBound){
+      let pressTimer = null;
+      const longPressMs = 600;
+      btn.addEventListener("mousedown", ()=>{
+        pressTimer = setTimeout(()=>{
+          openStampDatePicker();
+        }, longPressMs);
+      });
+      btn.addEventListener("touchstart", ()=>{
+        pressTimer = setTimeout(()=>{
+          openStampDatePicker();
+        }, longPressMs);
+      }, {passive:true});
+      const cancelTimer = ()=>{ if (pressTimer){ clearTimeout(pressTimer); pressTimer=null; } };
+      ["mouseup","mouseleave","touchend","touchcancel"].forEach(ev=> btn.addEventListener(ev, cancelTimer));
+      // normal click => today
+      btn.addEventListener("click", function(){
+        if (pressTimer === null) return;
+        const targetDate = getContextDate();
+        markLessonComplete(targetDate);
+      });
+      // right-click opens date picker too
+      btn.addEventListener("contextmenu", function(e){ e.preventDefault(); openStampDatePicker(); });
+      btn.dataset._stampBound = "1";
+    }
+
+    // explicit "complete by date" button
+    const btn2 = document.querySelector("#complete-by-date, [data-role='complete-by-date'], .complete-by-date");
+    if (btn2 && !btn2.dataset._stampBound){
+      btn2.addEventListener("click", openStampDatePicker);
+      btn2.dataset._stampBound = "1";
+    }
+  }
+
+  // Expose API
+  window.renderCompletionStamps = renderCompletionStamps;
+  window.markLessonComplete = markLessonComplete;
+  window.openStampDatePicker = openStampDatePicker;
+
+  document.addEventListener("DOMContentLoaded", function(){
+    renderCompletionStamps();
+    autoBindComplete();
+    wireDateModal();
+  });
+
+  const mo = new MutationObserver(()=>{
+    renderCompletionStamps();
+    autoBindComplete();
+  });
+  mo.observe(document.documentElement, {childList:true, subtree:true});
+
+})();
 </script>
+<!-- Stamp Date Modal -->
+<div id="stamp-date-modal" style="position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.35); z-index:9999;">
+<div style="width:min(92vw,420px); background:#fff; border-radius:16px; padding:16px; box-shadow:0 8px 24px rgba(0,0,0,0.2);">
+<div style="font-weight:700; margin-bottom:10px; font-size:1.05rem;">스탬프 찍을 날짜 선택</div>
+<input id="stamp-date-input" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:12px; font-size:1rem;" type="date"/>
+<div style="display:flex; gap:8px; margin-top:12px; justify-content:flex-end;">
+<button id="stamp-date-cancel" style="padding:10px 14px; border-radius:10px; border:1px solid #ddd; background:#fff;">취소</button>
+<button id="stamp-date-ok" style="padding:10px 14px; border-radius:10px; border:1px solid #2b8a3e; background:#2f9e44; color:#fff; font-weight:700;">스탬프 찍기</button>
+</div>
+</div>
+</div>
+<!-- Toast -->
+<div id="stamp-toast" style="position:fixed; left:50%; transform:translateX(-50%); bottom:18px; background:rgba(0,0,0,0.85); color:#fff; padding:10px 14px; border-radius:999px; font-size:0.92rem; z-index:10000; display:none;"></div>
 </body>
 </html>
-                
