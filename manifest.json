@@ -1,0 +1,42 @@
+{
+  "name": "오늘영어",
+  "short_name": "오늘영어",
+  "scope": "/studyenglish/",
+  "start_url": "/studyenglish/?source=pwa",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#6EC1E4",
+  "icons": [
+    {
+      "src": "/studyenglish/icons/pwa-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/studyenglish/icons/pwa-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/studyenglish/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "오늘 학습",
+      "short_name": "오늘 학습",
+      "url": "/studyenglish/?today=1",
+      "icons": [
+        {
+          "src": "/studyenglish/icons/pwa-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}
